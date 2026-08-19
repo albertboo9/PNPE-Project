@@ -1,4 +1,4 @@
-# PNPEKIT
+# PNPE 360
 
 ## Plateforme numérique de la Pépinière Nationale Pilote d’Entreprises d’Edéa
 
@@ -10,7 +10,7 @@
 
 # 1. OBJET DU DOCUMENT
 
-Ce document constitue la bible de référence pour la conception et l'implémentation du prototype **PNPEKIT**.
+Ce document constitue la bible de référence pour la conception et l'implémentation du prototype **PNPE 360**.
 
 Le prototype doit matérialiser une vision numérique crédible, moderne et immédiatement compréhensible de la transformation digitale de la **Pépinière Nationale Pilote d'Entreprises d'Edéa (PNPE)**.
 
@@ -41,7 +41,7 @@ Le résultat doit permettre à un dirigeant de la PNPE de comprendre en quelques
 
 ## 2.1 Vision
 
-PNPEKIT doit être présenté comme :
+PNPE 360 doit être présenté comme :
 
 > **Le parcours entrepreneurial numérique de la PNPE d'Edéa, de l'idée à l'entreprise.**
 
@@ -533,14 +533,14 @@ Aucun paiement réel n'est nécessaire pour cette version.
 
 Le prototype doit prévoir l'intégration avec le campus e-learning existant :
 
-**campus.studieslearning.com**
+**https://campus.studieslearning.com/course/view.php?id=1500**
 
 Le campus Moodle constitue l'environnement pédagogique cible.
 
 Dans le prototype, il faut représenter clairement la relation :
 
 ```text
-PNPEKIT
+PNPE 360
    ↓
 Catalogue
    ↓
@@ -556,7 +556,7 @@ Progression
    ↓
 Certificat
    ↓
-Retour PNPEKIT
+Retour PNPE 360
 ```
 
 Le prototype ne doit pas reproduire Moodle.
@@ -1058,7 +1058,7 @@ Le prototype ne doit jamais devenir inutilisable si une API IA est indisponible.
 
 # 36. DESIGN SYSTEM
 
-Le design doit reprendre le niveau de qualité atteint sur BSTPKIT tout en créant une identité propre à PNPEKIT.
+Le design doit reprendre le niveau de qualité atteint sur BSTPKIT tout en créant une identité propre à PNPE 360.
 
 Ne pas simplement changer les couleurs.
 
@@ -1171,7 +1171,7 @@ Incubation
 
 ### Formation
 
-"Construire un Business Model viable"
+"STARTER KIT ENTREPRENEUR"
 
 Progression :
 
@@ -1798,7 +1798,7 @@ Construire dans cet ordre :
 
 ### Phase 1
 
-Fondations et branding PNPEKIT.
+Fondations et branding PNPE 360.
 
 ### Phase 2
 

@@ -2,6 +2,35 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 
 const STORAGE_KEY = 'pnpe-demo-session-v1';
 
+const demoProject = {
+    id: 'project-agrofresh',
+    name: 'AgroFresh Cameroun',
+    sector: 'Agro-industrie',
+    city: 'Edéa',
+    region: 'Littoral',
+    status: 'En accompagnement',
+    maturity: 78,
+    need: 'Financement + équipement',
+    fundingNeed: 15000000,
+    jobs: 12,
+    description: 'Transformation de fruits locaux en purées et produits prêts à consommer pour les marchés urbains.',
+    registrationStatus: 'submitted',
+};
+
+const emptyRegistration = {
+    firstName: '', lastName: '', birthDate: '', gender: '', nationality: 'Camerounaise',
+    idType: '', idNumber: '', phone: '', email: '', region: '', department: '', city: '', commune: '', address: '',
+    professionalSituation: '', education: '', educationDomain: '', graduationYear: '', entrepreneurialExperience: '',
+    projectName: '', sector: '', subSector: '', projectType: '', stage: '', startDate: '', projectLocation: '',
+    description: '', problem: '', solution: '', objectives: '',
+    targetClients: '', marketArea: '', marketSegment: '', marketSize: '', identifiedNeeds: '', competitors: '',
+    competitiveAdvantage: '', differentiation: '', distributionChannel: '', acquisitionChannels: '', commercialStrategy: '',
+    businessModel: '', whyChoose: '', teamSize: '', teamMode: '', availableProfiles: '', keySkills: [], recruitmentNeeds: '',
+    premises: '', equipment: '', technologies: '', existingPartners: '', skills: [], customSkill: '', needs: [],
+    fundingAmount: '', currency: 'FCFA', fundingType: '', personalContribution: '', existingFunding: '', fundUse: '',
+    documents: [], currentStep: 1, submitted: false,
+};
+
 const initialSession = {
     actor: null,
     scene: 1,
@@ -17,16 +46,14 @@ const initialSession = {
     partnerShortlist: ['project-agrofresh'],
     connectionRequests: [],
     registration: {
-        firstName: 'Marie',
-        lastName: 'Ndomo',
-        phone: '6 99 00 00 00',
-        city: 'Edéa',
-        projectName: 'AgroFresh Cameroun',
-        sector: 'Agro-industrie',
-        problem: 'Réduire les pertes de fruits locaux et proposer des produits transformés accessibles.',
-        stage: 'Premières ventes',
-        needs: ['Formation', 'Équipement', 'Financement'],
+        ...emptyRegistration,
+        firstName: 'Marie', lastName: 'Ndomo', phone: '6 99 00 00 00', city: 'Edéa', region: 'Littoral',
+        projectName: 'AgroFresh Cameroun', sector: 'Agro-industrie', problem: 'Réduire les pertes de fruits locaux et proposer des produits transformés accessibles.',
+        stage: 'Premières ventes', needs: ['Formation', 'Équipement', 'Financement'], currentStep: 1,
     },
+    beneficiary: { id: 'beneficiary-marie', firstName: 'Marie', lastName: 'Ndomo', city: 'Edéa', region: 'Littoral', profileCompletion: 86 },
+    projects: [demoProject],
+    projectRegistrations: [],
 };
 
 const DemoSessionContext = createContext(null);
@@ -54,6 +81,7 @@ export function DemoSessionProvider({ children }) {
             ...current,
             registration: { ...current.registration, ...patch },
         })),
+        saveRegistrationStep: (currentStep) => setSession(current => ({ ...current, registration: { ...current.registration, currentStep } })),
         completeRegistration: () => setSession(current => ({
             ...current,
             actor: 'porteur',
@@ -61,6 +89,17 @@ export function DemoSessionProvider({ children }) {
             registrationCompleted: true,
             showRegistrationSuccess: true,
         })),
+        submitRegistration: () => setSession(current => {
+            const form = current.registration;
+            const project = {
+                id: `project-${Date.now()}`,
+                name: form.projectName || 'Nouveau projet', sector: form.sector || 'À qualifier', city: form.projectLocation || form.city || 'À préciser',
+                region: form.region || 'À préciser', status: 'Soumis', maturity: 35, need: (form.needs || []).join(' + ') || 'À qualifier',
+                fundingNeed: Number(form.fundingAmount) || 0, jobs: Number(form.teamSize) || 0, description: form.description || form.problem || 'Description à compléter.',
+                registrationStatus: 'submitted', details: form,
+            };
+            return { ...current, actor: 'porteur', scene: 4, registrationCompleted: true, showRegistrationSuccess: true, projects: [...current.projects, project], registration: { ...form, submitted: true } };
+        }),
         dismissRegistrationSuccess: () => setSession(current => ({ ...current, showRegistrationSuccess: false })),
         enrollCourse: (courseId) => setSession(current => ({
             ...current,
@@ -121,7 +160,7 @@ export function DemoSessionProvider({ children }) {
             scene: Math.max(current.scene, 10),
         })),
         setScene: (scene) => setSession(current => ({ ...current, scene })),
-        resetSession: () => setSession({ ...initialSession, registration: { ...initialSession.registration } }),
+        resetSession: () => setSession({ ...initialSession, registration: { ...initialSession.registration }, projects: [demoProject] }),
     }), [session]);
 
     return <DemoSessionContext.Provider value={value}>{children}</DemoSessionContext.Provider>;

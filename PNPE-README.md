@@ -1,4 +1,4 @@
-# PNPEKIT
+# PNPE 360
 
 ## Architecture de données du prototype
 
@@ -37,7 +37,7 @@ Les données, scores, statuts et indicateurs visibles dans cette version sont de
 
 ## Vision
 
-PNPEKIT matérialise un parcours entrepreneurial continu :
+PNPE 360 matérialise un parcours entrepreneurial continu :
 
 ```text
 Idée -> Candidature -> Profilage -> Formation -> Incubation
@@ -146,7 +146,7 @@ npm run preview
 ## Résilience et limites
 
 - Toutes les actions sont simulées localement ; aucune candidature, inscription, mise en relation ou export n'est persistant.
-- Le lien Moodle est une porte de démonstration vers `campus.studieslearning.com` ; aucune synchronisation réelle n'est implémentée.
+- Le cours ouvert sur Moodle est **STARTER KIT ENTREPRENEUR**, à l'adresse `https://campus.studieslearning.com/course/view.php?id=1500` ; aucune synchronisation réelle n'est implémentée.
 - Le score de maturité, les statuts « vérifié » et « prêt pour financement » sont des propositions UX à valider par le métier.
 - Le matching affiche une justification fixe issue des données de démonstration ; il ne s'agit pas d'une IA active.
 - Les espaces conseiller et direction sont des vues de présentation, sans contrôle d'accès backend.

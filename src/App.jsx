@@ -16,8 +16,9 @@ import { formatFcfa } from './services/mockService';
 import { AdvisorCasePage, AdvisorDashboard } from './features/advisor/AdvisorExperience';
 import { DirectionDashboard } from './features/direction/DirectionExperience';
 import { AdvisorActionsPage, AdvisorAlertsPage, AdvisorApplicationsPage, AdvisorBeneficiariesPage, AdvisorMeetingsPage, AdvisorTrainingPage } from './features/advisor/AdvisorWorkspace';
-import { PartnerConnectionsPage, PartnerMatchingPage, PartnerOpportunitiesPage, PartnerProjectActions } from './features/partner/PartnerWorkspace';
+import { PartnerConnectionsPage, PartnerMatchingPage, PartnerOpportunitiesPage, PartnerProjectActions, PartnerProjectsPage } from './features/partner/PartnerWorkspace';
 import { DirectionCohortsPage, DirectionImpactPage, DirectionPipelinePage, DirectionSectorsPage, DirectionTerritoriesPage, DirectionVigilancePage } from './features/direction/DirectionWorkspace';
+import { BeneficiaryProjectCockpit, BeneficiaryProjectsPage } from './features/projects/BeneficiaryProjects';
 
 function JourneyPage() {
     return <Shell><PageHeader eyebrow="Mon parcours" title="Chaque étape compte." description="Votre feuille de route PNPE relie diagnostic, formation, accompagnement et opportunités." /><Panel title="AgroFresh Cameroun" subtitle="Parcours de démonstration"><div className="roadmap-list">{journeyStages.map((stage, index) => <div className={`roadmap-row ${index === 4 ? 'current' : ''}`} key={stage.id}><span className="roadmap-check">{index < 4 ? <Check size={14} /> : index + 1}</span><div><strong>{stage.label}</strong><p>{index < 4 ? 'Étape validée dans votre dossier' : index === 4 ? 'Validation marché · en cours' : 'À venir dans votre parcours'}</p></div><Status tone={index < 4 ? 'green' : index === 4 ? 'terracotta' : 'muted'}>{index < 4 ? 'Terminé' : index === 4 ? 'En cours' : 'À venir'}</Status></div>)}</div></Panel></Shell>;
@@ -43,6 +44,8 @@ function AppRoutes() {
         <Route path="/" element={<RoleSelector />} />
         <Route path="/porteur/referencement" element={<RegistrationWizard />} />
         <Route path="/porteur" element={<BeneficiaryDashboard />} />
+        <Route path="/porteur/projets" element={<BeneficiaryProjectsPage />} />
+        <Route path="/porteur/projets/:id" element={<BeneficiaryProjectCockpit />} />
         <Route path="/porteur/parcours" element={<BeneficiaryJourneyPage />} />
         <Route path="/porteur/formations" element={<CoursesPage />} />
         <Route path="/porteur/formations/:id" element={<CourseDetailPage />} />
@@ -59,7 +62,7 @@ function AppRoutes() {
         <Route path="/conseiller/alertes" element={<AdvisorAlertsPage />} />
         <Route path="/conseiller/*" element={<Navigate to="/conseiller" replace />} />
         <Route path="/partenaire" element={<PartnerDashboard />} />
-        <Route path="/partenaire/projets" element={<ProjectsPage />} />
+        <Route path="/partenaire/projets" element={<PartnerProjectsPage />} />
         <Route path="/partenaire/projets/:id" element={<ProjectDetail />} />
         <Route path="/partenaire/matching" element={<PartnerMatchingPage />} />
         <Route path="/partenaire/opportunites" element={<PartnerOpportunitiesPage />} />

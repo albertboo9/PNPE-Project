@@ -1,4 +1,4 @@
-# PNPEKIT — Document de Reprise d'Implementation
+# PNPE 360 — Document de Reprise d'Implementation
 
 > Document de transfert pour une nouvelle discussion et un nouveau contexte d'implementation.
 >
@@ -100,7 +100,7 @@ Ne pas copier l'esthetique indigo BSTP telle quelle. Ne pas copier les donnees B
 
 ### Positionnement
 
-**PNPEKIT — Le parcours entrepreneurial numerique de la PNPE d'Edea, de l'idee a l'entreprise.**
+**PNPE 360 — Le parcours entrepreneurial numerique de la PNPE d'Edea, de l'idee a l'entreprise.**
 
 La plateforme coordonne :
 
@@ -125,7 +125,7 @@ La route `/` ne doit plus etre une landing marketing. Elle devient le **PNPE Con
 
 ### Ecran
 
-- marque PNPEKIT et mention « Prototype de demonstration » ;
+- marque PNPE 360 et mention « Prototype de demonstration » ;
 - titre : « Choisissez une perspective pour explorer la plateforme » ;
 - quatre cartes d'acteur, chacune avec image locale, mission, indicateurs et action ;
 - un bouton `Lancer la visite guidee` ;
@@ -269,7 +269,7 @@ KPI de demonstration : 1 248 porteurs accompagnes, 186 projets en incubation, 92
 
 ## 8. Formation : chaine complete
 
-Le catalogue doit montrer la relation PNPEKIT → Moodle, sans reproduire Moodle.
+Le catalogue doit montrer la relation PNPE 360 → Moodle, sans reproduire Moodle.
 
 ```text
 Decouverte → Inscription → Eligibilite → Paiement simule si necessaire
@@ -279,7 +279,7 @@ Decouverte → Inscription → Eligibilite → Paiement simule si necessaire
 
 Chaque formation affiche titre, categorie, niveau, duree, formateur, format, prix, apprenants, progression, certificat et recommandation. Prevoir gratuit/payant, detail de cours, modules, evaluation, certificat avec identifiant et QR simule.
 
-Moment WOW : terminer `Construire un Business Model viable` fait passer la progression a 100 %, affiche le certificat, ajoute la preuve au passeport et anime la hausse du score avec explication.
+Moment WOW : terminer `STARTER KIT ENTREPRENEUR` fait passer la progression a 100 %, affiche le certificat, ajoute la preuve au passeport et anime la hausse du score avec explication.
 
 ## 9. Incubation, financement et impact
 
