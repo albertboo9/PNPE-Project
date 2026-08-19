@@ -52,8 +52,10 @@ export const beneficiaryAdvisor = {
     nextMeeting: 'Jeudi 22 août · 10h30',
 };
 
+export const pnpeCampusCourseUrl = 'https://campus.studieslearning.com/course/view.php?id=1500';
+
 export const courses = [
-    { id: 'canvas', title: 'Construire un Business Model viable', category: 'Entrepreneuriat', instructor: 'Nathalie Mballa', duration: '6 h', level: 'Intermédiaire', format: 'Hybride', price: 0, progress: 82, status: 'En cours', students: 184, rating: 4.9, color: 'forest', image: '/assets/formation-business-model.jpg', recommended: true, certificate: true, description: 'Transformez votre idée en modèle économique testable, rentable et adapté à votre marché.', outcomes: ['Clarifier votre proposition de valeur', 'Identifier vos clients et revenus', 'Construire un Canvas défendable'], modules: ['Comprendre son problème client', 'Dessiner la proposition de valeur', 'Tester revenus et coûts', 'Présenter son Business Model'] },
+    { id: 'canvas', title: 'STARTER KIT ENTREPRENEUR', campusUrl: pnpeCampusCourseUrl, category: 'Entrepreneuriat', instructor: 'PNPE', duration: '6 h', level: 'Intermédiaire', format: 'En ligne', price: 0, progress: 82, status: 'En cours', students: 184, rating: 4.9, color: 'forest', image: '/assets/formation-business-model.jpg', recommended: true, certificate: true, description: 'Développez les fondamentaux nécessaires pour structurer votre projet entrepreneurial et préparer sa mise en œuvre.', outcomes: ['Clarifier votre proposition de valeur', 'Identifier vos clients et revenus', 'Construire un modèle économique défendable'], modules: ['Comprendre son problème client', 'Dessiner la proposition de valeur', 'Tester revenus et coûts', 'Présenter son projet entrepreneurial'] },
     { id: 'finance', title: 'Finance pour entrepreneurs', category: 'Finance', instructor: 'Armand Tchana', duration: '4 h 30', level: 'Fondamentaux', format: 'En ligne', price: 25000, progress: 45, status: 'En cours', students: 96, rating: 4.8, color: 'gold', image: '/assets/formation-finance.jpg', certificate: true, description: 'Pilotez votre trésorerie, vos marges et vos besoins de financement avec des outils simples.', outcomes: ['Lire ses flux de trésorerie', 'Calculer marge et seuil de rentabilité', 'Préparer un besoin de financement'], modules: ['Les chiffres essentiels', 'Prix, coûts et marge', 'Trésorerie prévisionnelle', 'Dossier de financement'] },
     { id: 'marketing', title: 'Marketing digital pour vendre local', category: 'Commercial', instructor: 'Sophie Essomba', duration: '5 h', level: 'Fondamentaux', format: 'En ligne', price: 0, progress: 100, status: 'Certifiée', students: 241, rating: 4.9, color: 'terracotta', image: '/assets/formation-marketing.jpg', certificate: true, description: 'Construisez une présence numérique utile et convertissez vos communautés locales en clients.', outcomes: ['Choisir les bons canaux', 'Créer un calendrier éditorial', 'Mesurer les premières ventes'], modules: ['Positionnement de marque', 'Contenus qui engagent', 'WhatsApp Business', 'Mesure et optimisation'] },
     { id: 'packaging', title: 'Packaging et qualité agroalimentaire', category: 'Qualité', instructor: 'Centre de formation PNPE', duration: '3 h', level: 'Avancé', format: 'Présentiel', price: 15000, progress: 0, status: 'Recommandée', students: 72, rating: 4.7, color: 'blue', image: '/assets/formation-qualite.jpg', recommended: true, certificate: true, description: 'Sécurisez vos produits et rendez-les prêts pour les circuits de distribution modernes.', outcomes: ['Choisir un emballage adapté', 'Appliquer les règles d’hygiène', 'Préparer un étiquetage conforme'], modules: ['Fonctions du packaging', 'Hygiène et conservation', 'Étiquetage', 'Contrôle qualité'] },
@@ -123,9 +125,16 @@ export const advisorMeetings = [
 ];
 
 export const partnerOpportunities = [
-    { id: 'partner-opp-1', title: 'Fonds équipements agroalimentaires', type: 'Financement', budget: '250 M FCFA', deadline: '30 sept. 2026', eligible: 12, published: true, color: 'green' },
-    { id: 'partner-opp-2', title: 'Programme fournisseurs durables', type: 'Marché', budget: 'Contrats cadres', deadline: '15 oct. 2026', eligible: 8, published: true, color: 'blue' },
-    { id: 'partner-opp-3', title: 'Prix innovation Littoral', type: 'Concours', budget: '30 M FCFA', deadline: '05 nov. 2026', eligible: 21, published: false, color: 'yellow' },
+    { id: 'partner-opp-1', title: 'Fonds équipements agroalimentaires', type: 'Financement', budget: '250 M FCFA', deadline: '30 sept. 2026', eligible: 12, applications: 7, status: 'Publiée', color: 'green' },
+    { id: 'partner-opp-2', title: 'Programme fournisseurs durables', type: 'Marché', budget: 'Contrats cadres', deadline: '15 oct. 2026', eligible: 8, applications: 4, status: 'Publiée', color: 'blue' },
+    { id: 'partner-opp-3', title: 'Prix innovation Littoral', type: 'Concours', budget: '30 M FCFA', deadline: '05 nov. 2026', eligible: 21, applications: 0, status: 'Brouillon', color: 'yellow' },
+];
+
+export const partnerApplications = [
+    { id: 'pa-1', opportunityId: 'partner-opp-1', project: 'AgroFresh Cameroun', owner: 'Marie Ndomo', score: 94, completeness: 92, status: 'Présélectionnée', missing: 'Prévisions financières' },
+    { id: 'pa-2', opportunityId: 'partner-opp-1', project: 'Cacao Origine Edéa', owner: 'Pauline Etame', score: 81, completeness: 84, status: 'À examiner', missing: 'Devis équipement' },
+    { id: 'pa-3', opportunityId: 'partner-opp-1', project: 'Kmer Bio Savons', owner: 'Nadia Bell', score: 76, completeness: 100, status: 'À examiner', missing: 'Aucune pièce critique' },
+    { id: 'pa-4', opportunityId: 'partner-opp-2', project: 'EcoPack Cameroon', owner: 'Christian Mvondo', score: 91, completeness: 96, status: 'Entretien', missing: 'Lettre d’intention' },
 ];
 
 export const directionCohorts = [

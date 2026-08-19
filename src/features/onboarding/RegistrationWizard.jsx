@@ -1,109 +1,69 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, ChevronDown, CircleHelp, Clock3, Compass, Handshake, Lightbulb, LoaderCircle, Save, Sparkles, Target, UserRound, Users, WalletCards } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, CheckCircle2, CircleHelp, Clock3, FileText, LoaderCircle, Save, Sparkles, Upload, UserRound } from 'lucide-react';
 import { Logo, Progress } from '../../components/ui';
 import { useDemoSession } from '../../stores/DemoSessionStore';
 
-const stages = [
-    { value: 'Idée', label: 'Une idée à clarifier' },
-    { value: 'Concept', label: 'Un concept déjà défini' },
-    { value: 'Prototype', label: 'Un prototype à tester' },
-    { value: 'Premières ventes', label: 'Mes premières ventes' },
-    { value: 'Activité lancée', label: 'Une activité déjà lancée' },
-];
+const stages = ['Idée', 'Concept', 'Prototype', 'Premières ventes', 'Activité lancée'];
+const sectors = ['Agro-industrie', 'Numérique', 'Artisanat', 'Énergie', 'Commerce', 'Services', 'Je ne sais pas encore'];
 const needs = ['Formation', 'Accompagnement', 'Équipement', 'Financement', 'Formalités', 'Réseau'];
-const stepMeta = [
-    { icon: UserRound, label: 'Vous' },
-    { icon: Lightbulb, label: 'Votre idée' },
-    { icon: Compass, label: 'Avancement' },
-    { icon: Target, label: 'Vos besoins' },
-    { icon: WalletCards, label: 'Orientation' },
-];
-const guidance = [
-    'Nous allons commencer par vous. Ces informations restent modifiables.',
-    'Pas besoin de business plan : une phrase simple suffit pour commencer.',
-    'Il n’y a pas de mauvaise réponse. Votre parcours s’adaptera à votre réalité.',
-    'Sélectionnez ce qui vous aiderait le plus dans les prochaines semaines.',
-    'Cette orientation est une proposition UX de démonstration à confirmer avec la PNPE.',
-];
-const roleOptions = [
-    { id: 'porteur', label: 'Porteur de projet', icon: UserRound, to: '/porteur' },
-    { id: 'conseiller', label: 'Conseiller PNPE', icon: Users, to: '/conseiller' },
-    { id: 'partenaire', label: 'Partenaire / financeur', icon: Handshake, to: '/partenaire' },
-    { id: 'direction', label: 'Direction PNPE', icon: Building2, to: '/direction' },
+const steps = [
+    { label: 'Identité', guidance: 'Ces informations permettent à la PNPE de garder le contact et de vous orienter vers le bon interlocuteur.' },
+    { label: 'Projet', guidance: 'Décrivez votre idée avec des mots simples. Aucun business plan n’est nécessaire à ce stade.' },
+    { label: 'Marché', guidance: 'Une première intuition sur vos clients et votre marché suffit. Votre conseiller vous aidera à la préciser.' },
+    { label: 'Ressources', guidance: 'Cette étape rend visibles vos forces actuelles et les ressources à mobiliser pour avancer.' },
+    { label: 'Besoins', guidance: 'Sélectionnez vos priorités. Les montants et statuts affichés sont des propositions UX de démonstration.' },
+    { label: 'Documents', guidance: 'Déposez ce que vous avez déjà. Un document manquant ne doit pas empêcher votre référencement.' },
+    { label: 'Validation', guidance: 'Relisez votre dossier avant de le transmettre. Les informations resteront modifiables avec votre conseiller.' },
 ];
 
-function Choice({ selected, children, onClick }) {
-    return <button type="button" className={`choice-tile ${selected ? 'selected' : ''}`} onClick={onClick}>
-        <span className="choice-check">{selected && <Check size={14} />}</span>{children}
-    </button>;
-}
+function Field({ label, value, onChange, ...props }) { return <label>{label}<input value={value || ''} onChange={event => onChange(event.target.value)} {...props} /></label>; }
+function Choice({ selected, children, onClick }) { return <button type="button" className={`choice-tile ${selected ? 'selected' : ''}`} onClick={onClick}><span className="choice-check">{selected && <Check size={14} />}</span>{children}</button>; }
 
 export function RegistrationWizard() {
     const navigate = useNavigate();
     const reduceMotion = useReducedMotion();
-    const { session, updateRegistration, completeRegistration, selectActor } = useDemoSession();
-    const [step, setStep] = useState(1);
-    const [saved, setSaved] = useState(true);
-    const [showWhy, setShowWhy] = useState(false);
-    const [roleMenu, setRoleMenu] = useState(false);
-    const [advancing, setAdvancing] = useState(false);
+    const { session, updateRegistration, saveRegistrationStep, submitRegistration, selectActor } = useDemoSession();
     const form = session.registration;
+    const [step, setStep] = useState(form.currentStep || 1);
+    const [saved, setSaved] = useState(true);
+    const [busy, setBusy] = useState(false);
+    const [why, setWhy] = useState(false);
+    const [fileState, setFileState] = useState('idle');
 
-    const update = (patch) => {
-        setSaved(false);
-        updateRegistration(patch);
-        globalThis.setTimeout(() => setSaved(true), 350);
-    };
-    const toggleNeed = (need) => update({ needs: form.needs.includes(need) ? form.needs.filter(item => item !== need) : [...form.needs, need] });
+    useEffect(() => { saveRegistrationStep(step); }, [step]);
+    const update = patch => { setSaved(false); updateRegistration(patch); window.setTimeout(() => setSaved(true), 350); };
+    const toggle = (key, value) => update({ [key]: (form[key] || []).includes(value) ? form[key].filter(item => item !== value) : [...(form[key] || []), value] });
+    const errors = useMemo(() => {
+        const required = { 1: [['firstName', 'Prénom'], ['lastName', 'Nom'], ['phone', 'Téléphone'], ['city', 'Ville ou commune']], 2: [['projectName', 'Nom du projet'], ['sector', 'Secteur'], ['description', 'Description du projet']], 3: [['targetClients', 'Clients ciblés']], 4: [['stage', 'Niveau d’avancement'], ['teamMode', 'Organisation de l’équipe']], 5: [['needs', 'Besoin prioritaire']] }[step] || [];
+        return required.filter(([key]) => !form[key] || (Array.isArray(form[key]) && form[key].length === 0));
+    }, [form, step]);
     const next = () => {
-        setAdvancing(true);
-        globalThis.setTimeout(() => {
-            if (step < 5) setStep(current => current + 1);
-            else finish();
-            setAdvancing(false);
-        }, reduceMotion ? 0 : 280);
+        if (errors.length) return;
+        if (step < 7) { setBusy(true); window.setTimeout(() => { setStep(value => value + 1); setBusy(false); }, reduceMotion ? 0 : 180); return; }
+        submitRegistration(); setBusy(true); window.setTimeout(() => navigate('/porteur/projets'), reduceMotion ? 0 : 700);
     };
-    const finish = () => {
-        completeRegistration();
-        globalThis.setTimeout(() => navigate('/porteur'), reduceMotion ? 0 : 900);
-    };
-    const skip = () => {
-        selectActor('porteur');
-        navigate('/porteur');
-    };
-    const switchRole = (role) => {
-        selectActor(role.id);
-        setRoleMenu(false);
-        navigate(role.to);
-    };
+    const upload = event => { const file = event.target.files?.[0]; if (!file) return; setFileState('analysing'); window.setTimeout(() => { setFileState('received'); update({ documents: [{ name: file.name, status: 'Reçu · démonstration' }] }); }, reduceMotion ? 0 : 900); };
 
     return <div className="registration-shell">
-        <header className="registration-header">
-            <Logo />
-            <div className="registration-meta"><span><Clock3 size={14} /> 4 min restantes</span><span className={saved ? 'saved' : ''}><Save size={14} /> {saved ? 'Sauvegardé' : 'Sauvegarde...'}</span></div>
-            <div className="registration-header-actions"><div className="registration-role-switcher"><button className="button ghost registration-role-link" onClick={() => setRoleMenu(value => !value)} aria-expanded={roleMenu}><UserRound size={15} /> Porteur <ChevronDown size={14} /></button><AnimatePresence>{roleMenu && <motion.div className="registration-role-menu" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }}>{roleOptions.map(role => { const Icon = role.icon; return <button key={role.id} className={role.id === 'porteur' ? 'current' : ''} onClick={() => switchRole(role)}><Icon size={15} /><span>{role.label}</span></button>; })}</motion.div>}</AnimatePresence></div><button className="button outline" onClick={skip}>Passer à mon espace <ArrowRight size={15} /></button></div>
-        </header>
-
-        <div className="registration-progress"><Progress value={step * 20} tone="forest" /></div>
-        <main className="registration-main">
-            <section className="wizard-panel">
-                <div className="wizard-top"><span>Étape {step} sur 5</span><span>{step * 20}% complété</span></div>
-                <div className="wizard-timeline" aria-label="Progression du référencement">{stepMeta.map(({ icon: Icon, label }, index) => <div key={label} className={`wizard-timeline-step ${index + 1 === step ? 'active' : ''} ${index + 1 < step ? 'done' : ''}`}><span><Icon size={15} /></span><small>{label}</small>{index < stepMeta.length - 1 && <i />}</div>)}</div>
-                <AnimatePresence mode="wait">
-                    <motion.div key={step} className="wizard-step" initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }} transition={{ duration: .24 }}>
-                        {step === 1 && <><p className="eyebrow">Faisons connaissance</p><h1>Comment devons-nous vous appeler ?</h1><p className="wizard-lead">Commençons par les informations utiles pour garder le contact.</p><div className="field-grid"><label>Prénom<input value={form.firstName} onChange={event => update({ firstName: event.target.value })} /></label><label>Nom<input value={form.lastName} onChange={event => update({ lastName: event.target.value })} /></label><label>Téléphone<input type="tel" value={form.phone} onChange={event => update({ phone: event.target.value })} /></label><label>Ville ou commune<input value={form.city} onChange={event => update({ city: event.target.value })} /></label></div></>}
-                        {step === 2 && <><p className="eyebrow">Votre idée ou activité</p><h1>Quel projet souhaitez-vous faire grandir ?</h1><p className="wizard-lead">Décrivez-le avec vos mots. Il n'est pas nécessaire d'avoir déjà un business plan.</p><div className="field-grid"><label>Nom du projet<input value={form.projectName} onChange={event => update({ projectName: event.target.value })} /></label><label>Secteur d'activité<select value={form.sector} onChange={event => update({ sector: event.target.value })}><option>Agro-industrie</option><option>Numérique</option><option>Artisanat</option><option>Énergie</option><option>Je ne sais pas encore</option></select></label></div><label>Quel problème votre projet cherche-t-il à résoudre ?<textarea rows="3" value={form.problem} onChange={event => update({ problem: event.target.value })} /></label></>}
-                        {step === 3 && <><p className="eyebrow">Niveau d'avancement</p><h1>Où en êtes-vous aujourd'hui ?</h1><p className="wizard-lead">Choisissez la situation la plus proche de la vôtre. Cette réponse sert uniquement à personnaliser le parcours.</p><div className="choice-grid single">{stages.map(item => <Choice key={item.value} selected={form.stage === item.value} onClick={() => update({ stage: item.value })}><strong>{item.label}</strong><small>{item.value}</small></Choice>)}</div><Choice selected={form.stage === 'Je ne sais pas encore'} onClick={() => update({ stage: 'Je ne sais pas encore' })}><strong>Je ne sais pas encore</strong><small>La PNPE m'aidera à situer mon projet</small></Choice></>}
-                        {step === 4 && <><p className="eyebrow">Besoins immédiats</p><h1>Qu'est-ce qui vous aiderait maintenant ?</h1><p className="wizard-lead">Choisissez une ou plusieurs priorités. Votre conseiller affinera ensuite cette première lecture.</p><div className="choice-grid">{needs.map(need => <Choice key={need} selected={form.needs.includes(need)} onClick={() => toggleNeed(need)}><strong>{need}</strong><small>{need === 'Financement' ? 'Préparer et rechercher des solutions' : `Être orienté sur le besoin ${need.toLowerCase()}`}</small></Choice>)}</div></>}
-                        {step === 5 && <><p className="eyebrow">Résumé et orientation</p><h1>Votre premier profil PNPE est prêt.</h1><p className="wizard-lead">Relisez ces informations avant de créer votre espace personnalisé.</p><div className="registration-summary"><div><span>Promotrice</span><strong>{form.firstName} {form.lastName}</strong><small>{form.city} · {form.phone}</small></div><div><span>Projet</span><strong>{form.projectName}</strong><small>{form.sector} · {form.stage}</small></div><div><span>Besoins exprimés</span><strong>{form.needs.join(' · ')}</strong><small>À confirmer avec un conseiller PNPE</small></div></div><div className="orientation-proposal"><Sparkles size={22} /><div><span>Proposition UX de démonstration</span><strong>Orientation initiale : structuration et validation marché</strong><p>Commencez par consolider le modèle économique, puis préparez les preuves nécessaires à la recherche de financement.</p></div></div></>}
-                    </motion.div>
-                </AnimatePresence>
-
-                <div className="wizard-guidance"><div className="guidance-icon"><Sparkles size={16} /></div><div><strong>Le conseil de la PNPE</strong><p>{guidance[step - 1]}</p></div><button type="button" className="why-button" onClick={() => setShowWhy(value => !value)}><CircleHelp size={15} /> Pourquoi ?</button>{showWhy && <p className="guidance-why">Il s'agit d'une aide de démonstration, pas d'une décision officielle de la PNPE.</p>}</div>
-                <div className="wizard-actions"><button className="button outline" disabled={step === 1 || advancing} onClick={() => setStep(current => current - 1)}><ArrowLeft size={16} /> Précédent</button><button className="button primary" disabled={advancing} onClick={next}>{advancing ? <><LoaderCircle className="spin" size={17} /> {step === 5 ? 'Création de votre espace...' : 'Analyse de vos réponses...'}</> : step === 5 ? <><CheckCircle2 size={17} /> Créer mon espace</> : <>Continuer <ArrowRight size={16} /></>}</button></div>
-            </section>
-        </main>
+        <header className="registration-header"><Logo /><div className="registration-meta"><span><Clock3 size={14} /> 8 min estimées</span><span className={saved ? 'saved' : ''}><Save size={14} /> {saved ? 'Sauvegardé' : 'Sauvegarde...'}</span></div><button className="button outline" onClick={() => { selectActor('porteur'); navigate('/porteur'); }}>Quitter et reprendre plus tard <ArrowRight size={15} /></button></header>
+        <div className="registration-progress"><Progress value={step * 100 / 7} tone="forest" /></div>
+        <main className="registration-main"><section className="wizard-panel">
+            <div className="wizard-top"><span>Étape {step} sur 7</span><span>{Math.round(step * 100 / 7)}% complété</span></div>
+            <div className="wizard-timeline" aria-label="Progression du référencement">{steps.map((item, index) => <div key={item.label} className={`wizard-timeline-step ${index + 1 === step ? 'active' : ''} ${index + 1 < step ? 'done' : ''}`}><span>{index + 1 < step ? <Check size={15} /> : <UserRound size={15} />}</span><small>{item.label}</small>{index < steps.length - 1 && <i />}</div>)}</div>
+            <AnimatePresence mode="wait"><motion.div key={step} className="wizard-step" initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }} transition={{ duration: .2 }}>
+                {step === 1 && <><p className="eyebrow">Bienvenue dans votre parcours PNPE</p><h1>Faisons connaissance.</h1><p className="wizard-lead">Ces quelques informations ouvrent votre dossier de référencement.</p><div className="field-grid"><Field label="Prénom *" value={form.firstName} onChange={value => update({ firstName: value })} autoFocus /><Field label="Nom *" value={form.lastName} onChange={value => update({ lastName: value })} /><Field label="Téléphone *" type="tel" value={form.phone} onChange={value => update({ phone: value })} /><Field label="Ville ou commune *" value={form.city} onChange={value => update({ city: value })} /><Field label="Région" value={form.region} onChange={value => update({ region: value })} /></div></>}
+                {step === 2 && <><p className="eyebrow">Votre idée ou activité</p><h1>Quel projet voulez-vous faire grandir ?</h1><p className="wizard-lead">Une première description suffit. Vous pourrez enrichir votre dossier plus tard.</p><div className="field-grid"><Field label="Nom du projet *" value={form.projectName} onChange={value => update({ projectName: value })} autoFocus /><label>Secteur d’activité *<select value={form.sector} onChange={event => update({ sector: event.target.value })}><option value="">Choisir un secteur</option>{sectors.map(item => <option key={item}>{item}</option>)}</select></label></div><label>Description du projet *<textarea rows="4" value={form.description} onChange={event => update({ description: event.target.value })} placeholder="Que proposez-vous ? Pour qui ?" /></label></>}
+                {step === 3 && <><p className="eyebrow">Votre marché</p><h1>Qui voulez-vous aider ou servir ?</h1><p className="wizard-lead">Même une estimation simple nous aide à préparer votre diagnostic.</p><label>Clients ou bénéficiaires ciblés *<textarea rows="3" value={form.targetClients} onChange={event => update({ targetClients: event.target.value })} autoFocus placeholder="Ex. familles d’Edéa, restaurants, revendeurs..." /></label><div className="field-grid"><Field label="Zone de marché" value={form.marketArea} onChange={value => update({ marketArea: value })} /><Field label="Vos concurrents ou alternatives" value={form.competitors} onChange={value => update({ competitors: value })} /></div></>}
+                {step === 4 && <><p className="eyebrow">Votre niveau d’avancement</p><h1>Où en êtes-vous aujourd’hui ?</h1><p className="wizard-lead">Il n’y a pas de mauvaise réponse. Votre parcours s’adaptera à votre réalité.</p><div className="choice-grid single">{stages.map(item => <Choice key={item} selected={form.stage === item} onClick={() => update({ stage: item })}><strong>{item}</strong><small>Je me reconnais dans cette situation</small></Choice>)}</div><label>Comment votre équipe est-elle organisée ? *<select value={form.teamMode} onChange={event => update({ teamMode: event.target.value })}><option value="">Choisir une réponse</option><option>Je porte le projet seul(e)</option><option>Une petite équipe est déjà mobilisée</option><option>Une équipe existe et doit être renforcée</option></select></label></>}
+                {step === 5 && <><p className="eyebrow">Vos besoins immédiats</p><h1>Qu’est-ce qui vous aiderait maintenant ?</h1><p className="wizard-lead">Choisissez une ou plusieurs priorités à partager avec votre conseiller.</p><div className="choice-grid">{needs.map(item => <Choice key={item} selected={(form.needs || []).includes(item)} onClick={() => toggle('needs', item)}><strong>{item}</strong><small>À confirmer avec la PNPE</small></Choice>)}</div><div className="field-grid"><Field label="Montant recherché" type="number" value={form.fundingAmount} onChange={value => update({ fundingAmount: value })} placeholder="Ex. 15000000" /><Field label="Utilisation principale" value={form.fundUse} onChange={value => update({ fundUse: value })} /></div></>}
+                {step === 6 && <><p className="eyebrow">Pièces et preuves</p><h1>Ajoutez ce que vous avez déjà.</h1><p className="wizard-lead">Le référencement reste possible sans document. Les statuts affichés sont des propositions UX de démonstration.</p><label className="upload-zone"><Upload size={23} /><strong>{fileState === 'analysing' ? 'Analyse documentaire...' : fileState === 'received' ? 'Document reçu' : 'Déposer un Business Plan ou un document'}</strong><small>{fileState === 'received' ? form.documents?.[0]?.name : 'PDF, Word ou image · optionnel'}</small><input type="file" onChange={upload} /></label><div className="registration-summary"><div><FileText size={18} /><span>Pièce d’identité</span><small>À compléter avec votre conseiller</small></div><div><FileText size={18} /><span>Business Plan</span><small>{fileState === 'received' ? 'Reçu · démonstration' : 'Optionnel à cette étape'}</small></div></div></>}
+                {step === 7 && <><p className="eyebrow">Dernière vérification</p><h1>Votre référencement est prêt.</h1><p className="wizard-lead">Relisez les éléments essentiels avant de créer votre dossier projet.</p><div className="registration-summary"><div><span>Porteur</span><strong>{form.firstName} {form.lastName}</strong><small>{form.city} · {form.phone}</small></div><div><span>Projet</span><strong>{form.projectName || 'À compléter'}</strong><small>{form.sector || 'Secteur à qualifier'} · {form.stage || 'Stade à préciser'}</small></div><div><span>Besoins</span><strong>{form.needs?.join(' · ') || 'À préciser'}</strong><small>Lecture initiale à confirmer avec un conseiller</small></div></div><div className="orientation-proposal"><Sparkles size={22} /><div><span>Proposition UX de démonstration</span><strong>Votre prochaine étape : diagnostic et structuration du modèle économique.</strong><p>La soumission crée un projet local et vous ouvre son cockpit.</p></div></div></>}
+            </motion.div></AnimatePresence>
+            {errors.length > 0 && <div className="form-error" role="alert">Il manque : {errors.map(([, label]) => label).join(', ')}.</div>}
+            <div className="wizard-guidance"><div className="guidance-icon"><Sparkles size={16} /></div><div><strong>Le conseil de la PNPE</strong><p>{steps[step - 1].guidance}</p></div><button type="button" className="why-button" onClick={() => setWhy(value => !value)}><CircleHelp size={15} /> Pourquoi ?</button>{why && <p className="guidance-why">Aide de démonstration, sans décision automatique ni analyse IA réelle.</p>}</div>
+            <div className="wizard-actions"><button className="button outline" disabled={step === 1 || busy} onClick={() => setStep(value => Math.max(1, value - 1))}><ArrowLeft size={16} /> Précédente</button><button className="button primary" disabled={busy} onClick={next}>{busy ? <><LoaderCircle className="spin" size={17} /> Traitement...</> : step === 7 ? <><CheckCircle2 size={17} /> Soumettre mon référencement</> : <>Continuer <ArrowRight size={16} /></>}</button></div>
+        </section></main>
     </div>;
 }

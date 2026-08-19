@@ -7,7 +7,7 @@ import { PageHeader, Panel, Progress, Shell, Status } from '../../components/ui'
 import { usePnpeResource } from '../../hooks/usePnpeResource';
 import { pnpeService } from '../../services/mockService';
 import { useDemoSession } from '../../stores/DemoSessionStore';
-import { courses, demoBeneficiary } from '../../data/demoUniverse';
+import { courses, demoBeneficiary, pnpeCampusCourseUrl } from '../../data/demoUniverse';
 
 const categories = ['Toutes', 'Entrepreneuriat', 'Finance', 'Commercial', 'Qualité', 'Formalités', 'Opérations'];
 
@@ -57,7 +57,7 @@ export function CoursesPage() {
     if (resource.status === 'error') return <Shell><ErrorState error={resource.error} onRetry={resource.reload} /></Shell>;
 
     const active = resource.data.filter(course => session.enrolledCourses.includes(course.id) && !session.completedCourses.includes(course.id));
-    return <Shell><PageHeader eyebrow="Académie PNPE" title="Développez les compétences qui font avancer votre projet." description="Un catalogue orienté action : choisissez une compétence, apprenez sur le campus et ajoutez la preuve à votre Passeport Entrepreneur." action={<a href="https://campus.studieslearning.com" target="_blank" rel="noreferrer" className="button outline"><GraduationCap size={16} /> Ouvrir le campus <ExternalLink size={14} /></a>} />
+    return <Shell><PageHeader eyebrow="Académie PNPE" title="Développez les compétences qui font avancer votre projet." description="Un catalogue orienté action : choisissez une compétence, apprenez sur le campus et ajoutez la preuve à votre Passeport Entrepreneur." action={<a href={pnpeCampusCourseUrl} target="_blank" rel="noreferrer" className="button outline"><GraduationCap size={16} /> Ouvrir STARTER KIT ENTREPRENEUR <ExternalLink size={14} /></a>} />
         <section className="academy-overview">
             <div><span className="eyebrow">Votre apprentissage</span><h2>{active.length} formation{active.length > 1 ? 's' : ''} en cours</h2><p>Votre prochaine compétence recommandée concerne la qualité et le packaging agroalimentaire.</p></div>
             <div className="academy-metric"><strong>68%</strong><Progress value={68} /><span>Score de formation</span></div>
@@ -70,7 +70,7 @@ export function CoursesPage() {
             <div className="category-tabs" role="tablist" aria-label="Catégories de formations">{categories.map(item => <button role="tab" aria-selected={category === item} key={item} className={category === item ? 'selected' : ''} onClick={() => setCategory(item)}>{item}</button>)}</div>
             {visible.length ? <div className="training-grid">{visible.map((course, index) => <CourseCard key={course.id} course={course} index={index} />)}</div> : <div className="academy-empty"><Filter size={24} /><h3>Aucune formation ne correspond à ces filtres.</h3><button className="button outline" onClick={() => { setCategory('Toutes'); setLevel('Tous niveaux'); setFormat('Tous formats'); setQuery(''); }}>Réinitialiser les filtres</button></div>}
         </section>
-        <Panel title="Du catalogue au passeport" subtitle="Chaîne de démonstration PNPEKIT → campus e-learning → preuve métier"><div className="moodle-chain">{['Découverte', 'Inscription', 'Campus Moodle', 'Évaluation', 'Certificat', 'Passeport'].map((item, index) => <div key={item}><span>{index + 1}</span>{item}{index < 5 && <ArrowRight size={14} />}</div>)}</div></Panel>
+        <Panel title="Du catalogue au passeport" subtitle="Chaîne de démonstration PNPE 360 → campus e-learning → preuve métier"><div className="moodle-chain">{['Découverte', 'Inscription', 'Campus Moodle', 'Évaluation', 'Certificat', 'Passeport'].map((item, index) => <div key={item}><span>{index + 1}</span>{item}{index < 5 && <ArrowRight size={14} />}</div>)}</div></Panel>
     </Shell>;
 }
 
@@ -100,7 +100,7 @@ export function CourseDetailPage() {
         <div className="course-detail-grid"><div className="course-main"><Panel title="Ce que vous saurez faire" subtitle="Compétences ajoutées à votre parcours"><div className="outcome-list">{course.outcomes.map(item => <span key={item}><Check size={16} /> {item}</span>)}</div></Panel><Panel title="Programme" subtitle={`${course.modules.length} modules · évaluation incluse`}><div className="module-list">{course.modules.map((module, index) => <div key={module}><span>{String(index + 1).padStart(2, '0')}</span><div><strong>{module}</strong><small>{index === course.modules.length - 1 ? 'Quiz final et mise en pratique' : 'Cours, exemple camerounais et exercice'}</small></div>{completed || state.progress > (index + 1) * 20 ? <Check size={17} /> : <PlayCircle size={17} />}</div>)}</div></Panel></div>
             <aside className="course-enrollment"><div><span className="eyebrow">Accès à la formation</span><strong>{course.price === 0 ? 'Gratuit' : `${course.price.toLocaleString('fr-FR')} FCFA`}</strong><p>{course.instructor}<br />{course.level} · certificat PNPE</p></div>{state.progress > 0 && <div className="training-progress"><div><span>Votre progression</span><strong>{state.progress}%</strong></div><Progress value={state.progress} /></div>}
                 {!enrolled && <button className="button primary full" onClick={enroll}>S'inscrire à la formation <ArrowRight size={16} /></button>}
-                {enrolled && !completed && <><a className="button primary full" href="https://campus.studieslearning.com" target="_blank" rel="noreferrer">Ouvrir le campus <ExternalLink size={15} /></a><button className="button outline full" onClick={finish} disabled={busy}>{busy ? 'Validation...' : 'Simuler la fin de formation'} <Award size={15} /></button></>}
+                {enrolled && !completed && <><a className="button primary full" href={course.campusUrl || pnpeCampusCourseUrl} target="_blank" rel="noreferrer">Ouvrir la formation <ExternalLink size={15} /></a><button className="button outline full" onClick={finish} disabled={busy}>{busy ? 'Validation...' : 'Simuler la fin de formation'} <Award size={15} /></button></>}
                 {completed && <div className="certificate-card"><Award size={27} /><span>Certificat obtenu</span><strong>{certificate?.id}</strong><small>Délivré le {certificate?.issuedAt}</small><Link to="/porteur/passeport" className="button outline full">Voir dans mon passeport <ArrowRight size={15} /></Link></div>}
                 <small className="ux-proposal">Paiement, éligibilité et certificat : proposition UX de démonstration.</small>
             </aside></div>

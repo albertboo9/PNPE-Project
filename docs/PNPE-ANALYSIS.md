@@ -1,4 +1,4 @@
-# PNPEKIT — Analyse d'écosystème et architecture cible
+# PNPE 360 — Analyse d'écosystème et architecture cible
 
 > Phase 0 du prototype indépendant PNPE-Project.
 >
@@ -12,7 +12,7 @@ La valeur du futur prototype ne doit pas venir du nombre d'écrans, mais de la c
 
 StarterKITCM fournit la base d'un portail entrepreneurial : pages publiques, authentification progressive, espace bénéficiaire, parcours, formations, documents, certifications et communauté. BSTP-Project renforce cette base avec une architecture par rôles, des espaces opérationnels distincts, un espace de direction, des données d'observatoire, des composants de passeport/maturité et une passerelle IA avec fallback.
 
-PNPEKIT doit conserver ces fondations, mais changer le centre de gravité produit : le bénéficiaire n'est pas une PME déjà qualifiée et la finalité n'est pas la mise en relation avec des donneurs d'ordre. Le modèle PNPE part du porteur et de son idée, puis rend visible la transformation progressive vers un projet mature, une entreprise et un impact mesurable.
+PNPE 360 doit conserver ces fondations, mais changer le centre de gravité produit : le bénéficiaire n'est pas une PME déjà qualifiée et la finalité n'est pas la mise en relation avec des donneurs d'ordre. Le modèle PNPE part du porteur et de son idée, puis rend visible la transformation progressive vers un projet mature, une entreprise et un impact mesurable.
 
 ## 2. Référentiel métier PNPE
 
@@ -79,7 +79,7 @@ StarterKITCM est une application React 18 + Vite organisée autour de React Rout
 6. Les formulaires multi-étapes, le dépôt de documents et les composants d'événements.
 7. La communauté et les événements, cohérents avec réseautage, mutualisation et information.
 
-### 3.3 Limites à corriger pour PNPEKIT
+### 3.3 Limites à corriger pour PNPE 360
 
 - Le routing est concentré dans un seul `App.jsx` et mélange production et pages de test.
 - Le layout privé concentre shell, navigation, responsive et détails de marque dans un fichier très long.
@@ -125,13 +125,13 @@ BSTP-Project reprend le socle Vite/React Router et ajoute :
 
 #### Micro-interactions fonctionnelles
 
-Les apparitions progressives, l'upload simulé, les toasts d'export et les panneaux IA servent une action identifiable. PNPEKIT gardera cette discipline et ajoutera les transitions liées aux jalons.
+Les apparitions progressives, l'upload simulé, les toasts d'export et les panneaux IA servent une action identifiable. PNPE 360 gardera cette discipline et ajoutera les transitions liées aux jalons.
 
 ### 4.3 Limites à ne pas reproduire
 
 - Le modèle PME/BSTP part d'une entreprise déjà constituée ; PNPE part du porteur et de l'idée.
 - Les dashboards additionnent parfois des modules et donnent une surface fonctionnelle plus large que les flux effectivement reliés.
-- Les chiffres fictifs doivent être signalés plus clairement dans PNPEKIT.
+- Les chiffres fictifs doivent être signalés plus clairement dans PNPE 360.
 - `passeportStore` augmente le score par incrément arbitraire après upload ; PNPE doit relier chaque évolution à une preuve lisible.
 - Le mock IA aléatoire convient aux tests mais pas au scénario institutionnel ; le mode démonstration sera déterministe.
 - Une carte ne sera utilisée que si elle répond à une question de pilotage.
