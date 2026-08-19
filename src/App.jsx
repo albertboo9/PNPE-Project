@@ -1,30 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Navigate, Route, Routes, Link } from 'react-router-dom';
-import { ArrowRight, Award, Building2, Check, GraduationCap, Sparkles, Users } from 'lucide-react';
+import { ArrowRight, Building2, Check, Sparkles, Users } from 'lucide-react';
 import { BeneficiaryDashboard } from './features/beneficiary/BeneficiaryDashboard';
 import { RoleSelector } from './features/role-selector/RoleSelector';
 import { RegistrationWizard } from './features/onboarding/RegistrationWizard';
 import { PartnerDashboard } from './features/partner/PartnerDashboard';
 import { DemoControls } from './components/DemoControls';
 import { DemoSessionProvider } from './stores/DemoSessionStore';
+import { CourseDetailPage, CoursesPage, PassportPage } from './features/training/TrainingExperience';
 import { PageHeader, Panel, Progress, Shell, Status } from './components/ui';
-import { ErrorState, PageSkeleton } from './components/AsyncState';
-import { usePnpeResource } from './hooks/usePnpeResource';
 import { journeyStages, projects } from './data/demoUniverse';
-import { formatFcfa, pnpeService } from './services/mockService';
+import { formatFcfa } from './services/mockService';
 
 function JourneyPage() {
     return <Shell><PageHeader eyebrow="Mon parcours" title="Chaque étape compte." description="Votre feuille de route PNPE relie diagnostic, formation, accompagnement et opportunités." /><Panel title="AgroFresh Cameroun" subtitle="Parcours de démonstration"><div className="roadmap-list">{journeyStages.map((stage, index) => <div className={`roadmap-row ${index === 4 ? 'current' : ''}`} key={stage.id}><span className="roadmap-check">{index < 4 ? <Check size={14} /> : index + 1}</span><div><strong>{stage.label}</strong><p>{index < 4 ? 'Étape validée dans votre dossier' : index === 4 ? 'Validation marché · en cours' : 'À venir dans votre parcours'}</p></div><Status tone={index < 4 ? 'green' : index === 4 ? 'terracotta' : 'muted'}>{index < 4 ? 'Terminé' : index === 4 ? 'En cours' : 'À venir'}</Status></div>)}</div></Panel></Shell>;
-}
-
-function CoursesPage() {
-    const [filter, setFilter] = useState('Toutes');
-    const resource = usePnpeResource(pnpeService.getCourses, []);
-    if (resource.status === 'loading') return <Shell><PageSkeleton label="Chargement du catalogue de formations" /></Shell>;
-    if (resource.status === 'error') return <Shell><ErrorState error={resource.error} onRetry={resource.reload} /></Shell>;
-    const courses = resource.data;
-    const visible = filter === 'Toutes' ? courses : courses.filter(course => course.category === filter);
-    return <Shell><PageHeader eyebrow="Centre de formation PNPE" title="Mon apprentissage" description="Les compétences et certificats qui font progresser votre projet." action={<a href="https://campus.studieslearning.com" target="_blank" rel="noreferrer" className="button outline"><GraduationCap size={16} /> Campus e-learning</a>} /><div className="learning-hero"><div><span className="eyebrow">Votre progression globale</span><h2>4 formations complétées</h2><p>Les certificats alimentent directement votre Passeport Entrepreneur.</p></div><div className="learning-stat"><strong>68%</strong><Progress value={68} /><span>Score de formation</span></div><Award size={54} /></div><div className="filter-bar"><div className="filters">{['Toutes', 'Entrepreneuriat', 'Finance', 'Commercial', 'Qualité'].map(item => <button key={item} className={filter === item ? 'selected' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div><span>{visible.length} formations</span></div><div className="course-grid">{visible.map(course => <article className="course-card" key={course.id}><div className={`course-art ${course.color}`}><span>{course.category}</span><GraduationCap size={34} /><strong>{course.price === 0 ? 'GRATUIT' : `${course.price.toLocaleString('fr-FR')} FCFA`}</strong></div><div className="course-body"><Status tone={course.status === 'Recommandée' ? 'blue' : course.status === 'Certifiée' ? 'gold' : 'green'}>{course.status}</Status><h3>{course.title}</h3><p>{course.instructor} · {course.duration} · {course.level}</p><Progress value={course.progress} tone={course.color === 'gold' ? 'gold' : 'forest'} /></div></article>)}</div></Shell>;
 }
 
 function ProjectsPage() {
@@ -48,7 +37,8 @@ function AppRoutes() {
         <Route path="/porteur" element={<BeneficiaryDashboard />} />
         <Route path="/porteur/parcours" element={<JourneyPage />} />
         <Route path="/porteur/formations" element={<CoursesPage />} />
-        <Route path="/porteur/passeport" element={<ProjectDetail role="porteur" />} />
+        <Route path="/porteur/formations/:id" element={<CourseDetailPage />} />
+        <Route path="/porteur/passeport" element={<PassportPage />} />
         <Route path="/porteur/opportunites" element={<BeneficiaryDashboard />} />
         <Route path="/porteur/*" element={<BeneficiaryDashboard />} />
         <Route path="/conseiller" element={<SimpleRolePage role="conseiller" title="Votre file de travail." description="Priorisez les porteurs qui nécessitent une intervention aujourd'hui." icon={Users} />} />

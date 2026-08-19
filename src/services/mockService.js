@@ -7,7 +7,16 @@ const notFound = (entity, id) => Promise.reject(new Error(`${entity} introuvable
 
 export const mockService = {
     getBeneficiary: (id = demoBeneficiary.id) => id === demoBeneficiary.id ? success(demoBeneficiary) : notFound('Porteur', id),
-    getCourses: () => success(courses),
+    getCourses: (filters = {}) => success(courses.filter(course => {
+        if (filters.category && filters.category !== 'Toutes' && course.category !== filters.category) return false;
+        if (filters.level && filters.level !== 'Tous niveaux' && course.level !== filters.level) return false;
+        if (filters.format && filters.format !== 'Tous formats' && course.format !== filters.format) return false;
+        if (filters.query) {
+            const query = filters.query.toLocaleLowerCase('fr');
+            return `${course.title} ${course.category} ${course.instructor}`.toLocaleLowerCase('fr').includes(query);
+        }
+        return true;
+    })),
     getCourse: (id) => courses.find(course => course.id === id) ? success(courses.find(course => course.id === id)) : notFound('Formation', id),
     getProjects: () => success(projects),
     getProject: (id) => projects.find(project => project.id === id) ? success(projects.find(project => project.id === id)) : notFound('Projet', id),

@@ -7,6 +7,9 @@ const initialSession = {
     scene: 1,
     registrationCompleted: false,
     showRegistrationSuccess: false,
+    enrolledCourses: ['canvas', 'finance', 'marketing'],
+    completedCourses: ['marketing'],
+    certificates: [{ courseId: 'marketing', id: 'PNPE-CERT-2026-0317', issuedAt: '12 août 2026' }],
     registration: {
         firstName: 'Marie',
         lastName: 'Ndomo',
@@ -53,6 +56,26 @@ export function DemoSessionProvider({ children }) {
             showRegistrationSuccess: true,
         })),
         dismissRegistrationSuccess: () => setSession(current => ({ ...current, showRegistrationSuccess: false })),
+        enrollCourse: (courseId) => setSession(current => ({
+            ...current,
+            enrolledCourses: current.enrolledCourses.includes(courseId)
+                ? current.enrolledCourses
+                : [...current.enrolledCourses, courseId],
+        })),
+        completeCourse: (courseId) => setSession(current => {
+            const alreadyCompleted = current.completedCourses.includes(courseId);
+            return {
+                ...current,
+                enrolledCourses: current.enrolledCourses.includes(courseId) ? current.enrolledCourses : [...current.enrolledCourses, courseId],
+                completedCourses: alreadyCompleted ? current.completedCourses : [...current.completedCourses, courseId],
+                certificates: alreadyCompleted ? current.certificates : [...current.certificates, {
+                    courseId,
+                    id: `PNPE-CERT-2026-${String(current.certificates.length + 318).padStart(4, '0')}`,
+                    issuedAt: '19 août 2026',
+                }],
+                scene: Math.max(current.scene, 6),
+            };
+        }),
         setScene: (scene) => setSession(current => ({ ...current, scene })),
         resetSession: () => setSession({ ...initialSession, registration: { ...initialSession.registration } }),
     }), [session]);
