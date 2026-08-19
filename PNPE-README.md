@@ -27,7 +27,7 @@ Contrats actuellement exposés :
 - `getAdvisorQueue()` et `getDashboardMetrics()`
 - `completeTraining(courseId)`
 
-Les espaces porteur, formation, projets, conseiller et direction consomment cette couche et affichent des états de chargement et d'erreur. Le cockpit porteur est isolé dans `src/features/beneficiary/` ; les autres vues doivent suivre progressivement cette même organisation.
+Les espaces porteur, formation, projets, conseiller et direction consomment cette couche et affichent des états de chargement et d'erreur. L'espace porteur est isolé dans `src/features/beneficiary/` ; les autres vues doivent suivre progressivement cette même organisation.
 
 Prototype de présentation stratégique de la plateforme numérique de la Pépinière Nationale Pilote d'Entreprises d'Edéa.
 
@@ -53,20 +53,20 @@ Le prototype montre comment un même système peut relier le porteur, les équip
 - sélecteur initial des quatre perspectives : porteur, conseiller, partenaire/financeur et direction ;
 - session de démonstration locale persistée dans `localStorage`, avec réinitialisation et scène courante ;
 - référencement guidé du porteur en cinq étapes, sauvegarde simulée et orientation initiale explicitement marquée comme proposition UX ;
-- transition de confirmation vers le cockpit guidé de Marie Ndomo et AgroFresh Cameroun ;
+- transition de confirmation vers l'espace guidé de Marie Ndomo et AgroFresh Cameroun ;
 - assets locaux dédiés aux acteurs et au référencement, sans dépendance à une image distante obligatoire ;
 - navigation responsive et prise en compte de `prefers-reduced-motion`.
 
 - accueil public et découverte de la promesse PNPE ;
 - candidature scénarisée au Programme Accélération PNPE ;
-- cockpit de Marie Ndomo et du projet AgroFresh Cameroun ;
+- espace de Marie Ndomo et du projet AgroFresh Cameroun ;
 - progression du parcours, prochaine action et score de maturité explicable ;
 - catalogue de formations gratuites et payantes ;
 - progression d'apprentissage, certificats et chaîne PNPE vers Moodle ;
 - Banque de projets avec recherche, filtre sectoriel et fiches structurées ;
 - demande de mise en relation avec un partenaire ;
 - file de travail conseiller avec problèmes, blocages et prochaines actions ;
-- cockpit Direction avec KPI, funnel de parcours, secteurs et indicateurs d'impact ;
+- espace Direction avec KPI, funnel de parcours, secteurs et indicateurs d'impact ;
 - notifications/toasts et actions simulées pour soutenir la démonstration.
 
 ## Routes principales
@@ -136,8 +136,8 @@ npm run preview
 ## Scénario de démonstration
 
 1. Depuis `/`, choisir « Porteur de projet » ou cliquer sur `Lancer la visite guidée`.
-2. Parcourir le référencement en cinq étapes, puis valider `Créer mon cockpit`.
-3. Depuis la confirmation, ouvrir le cockpit de Marie et montrer la prochaine action, la maturité `78/100` et l'étape de validation marché.
+2. Parcourir le référencement en cinq étapes, puis valider `Créer mon espace`.
+3. Depuis la confirmation, ouvrir l'espace de Marie et montrer la prochaine action, la maturité `78/100` et l'étape de validation marché.
 4. Ouvrir `/porteur/formations` ou `/porteur/parcours` pour montrer la continuité du parcours.
 5. Revenir à `/`, choisir « Partenaire / financeur », puis ouvrir la correspondance AgroFresh et ses preuves.
 6. Choisir « Conseiller PNPE » ou « Direction PNPE » pour présenter les espaces réservés à leurs flux opérationnels des prochains lots.

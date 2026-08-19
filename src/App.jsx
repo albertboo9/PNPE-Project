@@ -1,7 +1,9 @@
 import React from 'react';
-import { Navigate, Route, Routes, Link } from 'react-router-dom';
+import { Navigate, Route, Routes, Link, useParams } from 'react-router-dom';
 import { ArrowRight, Building2, Check, Sparkles, Users } from 'lucide-react';
 import { BeneficiaryDashboard } from './features/beneficiary/BeneficiaryDashboard';
+import { BeneficiaryJourneyPage } from './features/beneficiary/BeneficiaryJourney';
+import { BeneficiaryOpportunitiesPage } from './features/beneficiary/BeneficiaryOpportunities';
 import { RoleSelector } from './features/role-selector/RoleSelector';
 import { RegistrationWizard } from './features/onboarding/RegistrationWizard';
 import { PartnerDashboard } from './features/partner/PartnerDashboard';
@@ -11,6 +13,11 @@ import { CourseDetailPage, CoursesPage, PassportPage } from './features/training
 import { PageHeader, Panel, Progress, Shell, Status } from './components/ui';
 import { journeyStages, projects } from './data/demoUniverse';
 import { formatFcfa } from './services/mockService';
+import { AdvisorCasePage, AdvisorDashboard } from './features/advisor/AdvisorExperience';
+import { DirectionDashboard } from './features/direction/DirectionExperience';
+import { AdvisorActionsPage, AdvisorAlertsPage, AdvisorApplicationsPage, AdvisorBeneficiariesPage, AdvisorMeetingsPage, AdvisorTrainingPage } from './features/advisor/AdvisorWorkspace';
+import { PartnerConnectionsPage, PartnerMatchingPage, PartnerOpportunitiesPage, PartnerProjectActions } from './features/partner/PartnerWorkspace';
+import { DirectionCohortsPage, DirectionImpactPage, DirectionPipelinePage, DirectionSectorsPage, DirectionTerritoriesPage, DirectionVigilancePage } from './features/direction/DirectionWorkspace';
 
 function JourneyPage() {
     return <Shell><PageHeader eyebrow="Mon parcours" title="Chaque étape compte." description="Votre feuille de route PNPE relie diagnostic, formation, accompagnement et opportunités." /><Panel title="AgroFresh Cameroun" subtitle="Parcours de démonstration"><div className="roadmap-list">{journeyStages.map((stage, index) => <div className={`roadmap-row ${index === 4 ? 'current' : ''}`} key={stage.id}><span className="roadmap-check">{index < 4 ? <Check size={14} /> : index + 1}</span><div><strong>{stage.label}</strong><p>{index < 4 ? 'Étape validée dans votre dossier' : index === 4 ? 'Validation marché · en cours' : 'À venir dans votre parcours'}</p></div><Status tone={index < 4 ? 'green' : index === 4 ? 'terracotta' : 'muted'}>{index < 4 ? 'Terminé' : index === 4 ? 'En cours' : 'À venir'}</Status></div>)}</div></Panel></Shell>;
@@ -21,9 +28,10 @@ function ProjectsPage() {
 }
 
 function ProjectDetail({ role = 'partenaire' }) {
-    const project = projects[0];
+    const { id } = useParams();
+    const project = projects.find(item => item.id === id) || projects[0];
     const isBeneficiary = role === 'porteur';
-    return <Shell role={role}><Link to={isBeneficiary ? '/porteur' : '/partenaire/projets'} className="back-link">← {isBeneficiary ? 'Retour au cockpit' : 'Retour à la banque de projets'}</Link><div className="detail-head"><div><Status tone="green">{project.status} · proposition UX</Status><h1>{project.name}</h1><p>{project.description}</p><div className="detail-meta"><span>{project.owner}</span><span>{project.city}, {project.region}</span><span>{project.sector}</span></div></div></div><div className="detail-grid"><Panel title={isBeneficiary ? 'Mon projet' : 'Profil du projet'} subtitle="Informations structurantes"><div className="profile-facts"><div><span>Besoin principal</span><strong>{project.need}</strong></div><div><span>Montant recherché</span><strong>{formatFcfa(project.amount)}</strong></div><div><span>Emplois potentiels</span><strong>{project.jobs}</strong></div><div><span>Maturité proposée</span><strong>{project.maturity}/100</strong></div></div></Panel><Panel title="Preuves du parcours" subtitle={isBeneficiary ? 'Eléments ajoutés à votre passeport' : 'Eléments rendus visibles au partenaire'}><div className="proof-list"><span><Check size={15} /> Diagnostic réalisé</span><span><Check size={15} /> 4 formations complétées</span><span><Check size={15} /> 3 certificats associés</span></div>{!isBeneficiary && <button className="button primary full">Demander une mise en relation <ArrowRight size={16} /></button>}</Panel></div></Shell>;
+    return <Shell role={role}><Link to={isBeneficiary ? '/porteur' : '/partenaire/projets'} className="back-link">← {isBeneficiary ? 'Retour à mon espace' : 'Retour à la banque de projets'}</Link><div className="detail-head"><div><Status tone="green">{project.status} · proposition UX</Status><h1>{project.name}</h1><p>{project.description}</p><div className="detail-meta"><span>{project.owner}</span><span>{project.city}, {project.region}</span><span>{project.sector}</span></div>{!isBeneficiary && <PartnerProjectActions project={project} />}</div></div><div className="detail-grid"><Panel title={isBeneficiary ? 'Mon projet' : 'Profil du projet'} subtitle="Informations structurantes"><div className="profile-facts"><div><span>Besoin principal</span><strong>{project.need}</strong></div><div><span>Montant recherché</span><strong>{formatFcfa(project.amount)}</strong></div><div><span>Emplois potentiels</span><strong>{project.jobs}</strong></div><div><span>Maturité proposée</span><strong>{project.maturity}/100</strong></div></div></Panel><Panel title="Preuves du parcours" subtitle={isBeneficiary ? 'Eléments ajoutés à votre passeport' : 'Eléments rendus visibles au partenaire'}><div className="proof-list"><span><Check size={15} /> Diagnostic réalisé</span><span><Check size={15} /> 4 formations complétées</span><span><Check size={15} /> 3 certificats associés</span></div></Panel></div></Shell>;
 }
 
 function SimpleRolePage({ role, title, description, icon: Icon }) {
@@ -35,20 +43,36 @@ function AppRoutes() {
         <Route path="/" element={<RoleSelector />} />
         <Route path="/porteur/referencement" element={<RegistrationWizard />} />
         <Route path="/porteur" element={<BeneficiaryDashboard />} />
-        <Route path="/porteur/parcours" element={<JourneyPage />} />
+        <Route path="/porteur/parcours" element={<BeneficiaryJourneyPage />} />
         <Route path="/porteur/formations" element={<CoursesPage />} />
         <Route path="/porteur/formations/:id" element={<CourseDetailPage />} />
         <Route path="/porteur/passeport" element={<PassportPage />} />
-        <Route path="/porteur/opportunites" element={<BeneficiaryDashboard />} />
+        <Route path="/porteur/opportunites" element={<BeneficiaryOpportunitiesPage />} />
         <Route path="/porteur/*" element={<BeneficiaryDashboard />} />
-        <Route path="/conseiller" element={<SimpleRolePage role="conseiller" title="Votre file de travail." description="Priorisez les porteurs qui nécessitent une intervention aujourd'hui." icon={Users} />} />
-        <Route path="/conseiller/*" element={<SimpleRolePage role="conseiller" title="Porteurs accompagnés" description="Retrouvez les dossiers et les prochaines actions de votre portefeuille." icon={Users} />} />
+        <Route path="/conseiller" element={<AdvisorDashboard />} />
+        <Route path="/conseiller/porteurs" element={<AdvisorBeneficiariesPage />} />
+        <Route path="/conseiller/porteurs/:id" element={<AdvisorCasePage />} />
+        <Route path="/conseiller/candidatures" element={<AdvisorApplicationsPage />} />
+        <Route path="/conseiller/actions" element={<AdvisorActionsPage />} />
+        <Route path="/conseiller/rendez-vous" element={<AdvisorMeetingsPage />} />
+        <Route path="/conseiller/formations" element={<AdvisorTrainingPage />} />
+        <Route path="/conseiller/alertes" element={<AdvisorAlertsPage />} />
+        <Route path="/conseiller/*" element={<Navigate to="/conseiller" replace />} />
         <Route path="/partenaire" element={<PartnerDashboard />} />
         <Route path="/partenaire/projets" element={<ProjectsPage />} />
         <Route path="/partenaire/projets/:id" element={<ProjectDetail />} />
-        <Route path="/partenaire/*" element={<PartnerDashboard />} />
-        <Route path="/direction" element={<SimpleRolePage role="direction" title="L'impact de la PNPE, en un regard." description="Une lecture consolidée des parcours, territoires et résultats de démonstration." icon={Building2} />} />
-        <Route path="/direction/*" element={<SimpleRolePage role="direction" title="Cockpit d'impact PNPE" description="Pilotez le pipeline et les cohortes depuis une même vue." icon={Building2} />} />
+        <Route path="/partenaire/matching" element={<PartnerMatchingPage />} />
+        <Route path="/partenaire/opportunites" element={<PartnerOpportunitiesPage />} />
+        <Route path="/partenaire/mises-en-relation" element={<PartnerConnectionsPage />} />
+        <Route path="/partenaire/*" element={<Navigate to="/partenaire" replace />} />
+        <Route path="/direction" element={<DirectionDashboard />} />
+        <Route path="/direction/pipeline" element={<DirectionPipelinePage />} />
+        <Route path="/direction/cohortes" element={<DirectionCohortsPage />} />
+        <Route path="/direction/secteurs" element={<DirectionSectorsPage />} />
+        <Route path="/direction/territoires" element={<DirectionTerritoriesPage />} />
+        <Route path="/direction/impact" element={<DirectionImpactPage />} />
+        <Route path="/direction/vigilance" element={<DirectionVigilancePage />} />
+        <Route path="/direction/*" element={<Navigate to="/direction" replace />} />
         <Route path="/projets" element={<ProjectsPage />} />
         <Route path="/projets/:id" element={<ProjectDetail />} />
         <Route path="*" element={<Navigate to="/" replace />} />

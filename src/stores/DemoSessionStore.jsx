@@ -10,6 +10,12 @@ const initialSession = {
     enrolledCourses: ['canvas', 'finance', 'marketing'],
     completedCourses: ['marketing'],
     certificates: [{ courseId: 'marketing', id: 'PNPE-CERT-2026-0317', issuedAt: '12 août 2026' }],
+    savedOpportunities: ['opp-2'],
+    startedApplications: [],
+    advisorCompletedActions: [],
+    advisorValidatedApplications: [],
+    partnerShortlist: ['project-agrofresh'],
+    connectionRequests: [],
     registration: {
         firstName: 'Marie',
         lastName: 'Ndomo',
@@ -76,6 +82,44 @@ export function DemoSessionProvider({ children }) {
                 scene: Math.max(current.scene, 6),
             };
         }),
+        toggleSavedOpportunity: (opportunityId) => setSession(current => ({
+            ...current,
+            savedOpportunities: current.savedOpportunities.includes(opportunityId)
+                ? current.savedOpportunities.filter(id => id !== opportunityId)
+                : [...current.savedOpportunities, opportunityId],
+        })),
+        startOpportunityApplication: (opportunityId) => setSession(current => ({
+            ...current,
+            startedApplications: current.startedApplications.includes(opportunityId)
+                ? current.startedApplications
+                : [...current.startedApplications, opportunityId],
+            scene: Math.max(current.scene, 7),
+        })),
+        toggleAdvisorAction: (actionId) => setSession(current => ({
+            ...current,
+            advisorCompletedActions: current.advisorCompletedActions.includes(actionId)
+                ? current.advisorCompletedActions.filter(id => id !== actionId)
+                : [...current.advisorCompletedActions, actionId],
+        })),
+        validateAdvisorApplication: (applicationId) => setSession(current => ({
+            ...current,
+            advisorValidatedApplications: current.advisorValidatedApplications.includes(applicationId)
+                ? current.advisorValidatedApplications
+                : [...current.advisorValidatedApplications, applicationId],
+        })),
+        togglePartnerShortlist: (projectId) => setSession(current => ({
+            ...current,
+            partnerShortlist: current.partnerShortlist.includes(projectId)
+                ? current.partnerShortlist.filter(id => id !== projectId)
+                : [...current.partnerShortlist, projectId],
+        })),
+        requestConnection: (projectId) => setSession(current => ({
+            ...current,
+            connectionRequests: current.connectionRequests.includes(projectId)
+                ? current.connectionRequests
+                : [...current.connectionRequests, projectId],
+            scene: Math.max(current.scene, 10),
+        })),
         setScene: (scene) => setSession(current => ({ ...current, scene })),
         resetSession: () => setSession({ ...initialSession, registration: { ...initialSession.registration } }),
     }), [session]);

@@ -10,7 +10,7 @@ const actors = [
         id: 'porteur',
         title: 'Porteur de projet',
         mission: 'Je veux structurer mon idée',
-        description: 'Un référencement guidé, puis un cockpit qui indique chaque prochaine étape.',
+        description: 'Un référencement guidé, puis un espace qui indique chaque prochaine étape.',
         image: '/assets/porteur-marie.jpg',
         icon: Compass,
         metric: '5 étapes guidées',
@@ -107,7 +107,7 @@ export function RoleSelector() {
 
         <footer className="control-footer">
             <button className="button primary" onClick={() => openActor(actors[0])}><Sparkles size={17} /> Lancer la visite guidée</button>
-            {session.registrationCompleted && <button className="button outline" onClick={() => { selectActor('porteur'); navigate('/porteur'); }}>Revoir le cockpit de Marie <ArrowRight size={16} /></button>}
+            {session.registrationCompleted && <button className="button outline" onClick={() => { selectActor('porteur'); navigate('/porteur'); }}>Revoir l’espace de Marie <ArrowRight size={16} /></button>}
             <a href="/docs/PNPE-REPRISE-CONTEXTE-IMPLEMENTATION.md" target="_blank" rel="noreferrer" className="control-doc"><FileText size={15} /> Documentation de démonstration</a>
         </footer>
     </main>;

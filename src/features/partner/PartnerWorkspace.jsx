@@ -1,0 +1,43 @@
+import React, { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowRight, Bookmark, BriefcaseBusiness, CalendarDays, Check, CheckCircle2, Handshake, MapPin, Plus, Search, Send, Sparkles, Target, Users } from 'lucide-react';
+import { toast } from 'sonner';
+import { PageHeader, Panel, Progress, Shell, Status } from '../../components/ui';
+import { partnerOpportunities, projects } from '../../data/demoUniverse';
+import { formatFcfa } from '../../services/mockService';
+import { useDemoSession } from '../../stores/DemoSessionStore';
+
+const scoreProject = (project, criteria) => 45 + (criteria.sector === 'Tous' || project.sector === criteria.sector ? 22 : 0) + (criteria.region === 'Toutes' || project.region === criteria.region ? 18 : 0) + (project.maturity >= criteria.maturity ? 15 : 0);
+
+export function PartnerMatchingPage() {
+    const [criteria, setCriteria] = useState({ sector: 'Agro-industrie', region: 'Littoral', maturity: 70 });
+    const ranked = useMemo(() => projects.map(project => ({ ...project, match: scoreProject(project, criteria) })).sort((a, b) => b.match - a.match), [criteria]);
+    return <Shell role="partenaire"><PageHeader eyebrow="Matching déterministe" title="Vos critères deviennent une shortlist expliquée." description="Aucun score opaque : chaque résultat indique les règles qui ont produit sa position." action={<Status tone="blue"><Sparkles size={13} /> Calcul local</Status>} />
+        <div className="matching-studio"><aside><h2>Votre mandat</h2><p>Définissez les critères prioritaires de sourcing.</p><label>Secteur<select value={criteria.sector} onChange={event => setCriteria(current => ({ ...current, sector: event.target.value }))}><option>Tous</option><option>Agro-industrie</option><option>Packaging</option><option>Énergie</option></select></label><label>Territoire<select value={criteria.region} onChange={event => setCriteria(current => ({ ...current, region: event.target.value }))}><option>Toutes</option><option>Littoral</option><option>Sud</option></select></label><label>Maturité minimale<div className="range-value"><input type="range" min="60" max="90" value={criteria.maturity} onChange={event => setCriteria(current => ({ ...current, maturity: Number(event.target.value) }))} /><strong>{criteria.maturity}+</strong></div></label><div className="matching-rule"><Target size={18} /><span>Score proposé : secteur 22 pts, territoire 18 pts, maturité 15 pts.</span></div></aside><section><div className="section-heading"><div><span className="eyebrow">Classement instantané</span><h2>{ranked.length} projets analysés</h2></div></div>{ranked.map((project, index) => <motion.article layout className="ranked-project" key={project.id}><strong className="rank-number">0{index + 1}</strong><div><Status tone={project.match >= 90 ? 'green' : 'gold'}>{project.match}% de correspondance</Status><h3>{project.name}</h3><p>{project.sector} · {project.city}, {project.region}</p><div className="match-reasons"><span className={criteria.sector === 'Tous' || project.sector === criteria.sector ? 'yes' : ''}><Check size={13} /> Secteur</span><span className={criteria.region === 'Toutes' || project.region === criteria.region ? 'yes' : ''}><Check size={13} /> Territoire</span><span className={project.maturity >= criteria.maturity ? 'yes' : ''}><Check size={13} /> Maturité</span></div></div><Link className="round-arrow" to={`/partenaire/projets/${project.id}`}><ArrowRight size={17} /></Link></motion.article>)}</section></div>
+    </Shell>;
+}
+
+export function PartnerOpportunitiesPage() {
+    return <Shell role="partenaire"><PageHeader eyebrow="Appels et programmes" title="Publiez une opportunité, mesurez son vivier." description="Chaque programme expose son budget, son échéance et le nombre de projets déjà éligibles." action={<button className="button primary" onClick={() => toast.success('Brouillon d’opportunité créé')}><Plus size={16} /> Nouvelle opportunité</button>} />
+        <div className="opportunity-admin-grid">{partnerOpportunities.map((item, index) => <motion.article initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * .06 }} key={item.id} className={`admin-opportunity ${item.color}`}><div className="admin-opportunity-head"><Status tone={item.published ? 'green' : 'muted'}>{item.published ? 'Publiée' : 'Brouillon'}</Status><span>{item.type}</span></div><h2>{item.title}</h2><div className="admin-budget"><strong>{item.budget}</strong><span>Enveloppe annoncée</span></div><div className="admin-opportunity-stats"><span><Users size={16} /><strong>{item.eligible}</strong> projets éligibles</span><span><CalendarDays size={16} /> {item.deadline}</span></div><button className="button outline full" onClick={() => toast.success(item.published ? 'Rapport d’opportunité ouvert' : 'Opportunité publiée en démonstration')}>{item.published ? 'Voir les candidatures' : 'Publier maintenant'} <ArrowRight size={15} /></button></motion.article>)}</div>
+    </Shell>;
+}
+
+export function PartnerConnectionsPage() {
+    const { session } = useDemoSession();
+    const requested = projects.filter(project => session.connectionRequests.includes(project.id));
+    const shortlisted = projects.filter(project => session.partnerShortlist.includes(project.id) && !session.connectionRequests.includes(project.id));
+    return <Shell role="partenaire"><PageHeader eyebrow="Relations avec les porteurs" title="Du projet repéré à l’échange qualifié." description="Suivez vos favoris et vos demandes de mise en relation sans perdre le contexte du sourcing." action={<Link className="button primary" to="/partenaire/projets"><Search size={16} /> Trouver des projets</Link>} />
+        <div className="connection-pipeline"><section><div className="board-title"><span>Shortlist</span><strong>{shortlisted.length}</strong></div>{shortlisted.map(project => <ConnectionCard key={project.id} project={project} state="shortlist" />)}{shortlisted.length === 0 && <EmptyConnection text="Aucun projet en attente dans la shortlist." />}</section><section><div className="board-title active"><span>Demandes envoyées</span><strong>{requested.length}</strong></div>{requested.map(project => <ConnectionCard key={project.id} project={project} state="sent" />)}{requested.length === 0 && <EmptyConnection text="Les demandes envoyées apparaîtront ici." />}</section><section><div className="board-title completed"><span>Échanges actifs</span><strong>1</strong></div><article className="connection-card active"><div className="connection-logo"><Handshake /></div><div><Status tone="green">Rendez-vous confirmé</Status><h3>EcoPack Cameroon</h3><p>Christian Mvondo · Packaging</p><small>Jeudi 27 août · 11h00 · PNPE Édéa</small></div><button className="icon-btn" onClick={() => toast.success('Invitation calendrier envoyée')}><CalendarDays size={16} /></button></article></section></div>
+    </Shell>;
+}
+
+function ConnectionCard({ project, state }) { return <article className="connection-card"><div className="connection-logo"><BriefcaseBusiness /></div><div><Status tone={state === 'sent' ? 'blue' : 'gold'}>{state === 'sent' ? 'En attente PNPE' : 'Projet favori'}</Status><h3>{project.name}</h3><p>{project.owner} · {project.sector}</p><small>{formatFcfa(project.amount)} · maturité {project.maturity}/100</small></div><Link className="round-arrow" to={`/partenaire/projets/${project.id}`}><ArrowRight size={16} /></Link></article>; }
+function EmptyConnection({ text }) { return <div className="board-empty"><Handshake /><strong>Aucun élément</strong><span>{text}</span></div>; }
+
+export function PartnerProjectActions({ project }) {
+    const { session, requestConnection, togglePartnerShortlist } = useDemoSession();
+    const saved = session.partnerShortlist.includes(project.id); const sent = session.connectionRequests.includes(project.id);
+    return <div className="partner-detail-actions"><button className={`button ${saved ? 'success' : 'outline'}`} onClick={() => { togglePartnerShortlist(project.id); toast.success(saved ? 'Projet retiré de la shortlist' : 'Projet ajouté à la shortlist'); }}><Bookmark size={16} fill={saved ? 'currentColor' : 'none'} /> {saved ? 'Dans la shortlist' : 'Ajouter à la shortlist'}</button><button className="button primary" disabled={sent} onClick={() => { requestConnection(project.id); toast.success('Demande transmise à la PNPE'); }}>{sent ? <CheckCircle2 size={16} /> : <Send size={16} />}{sent ? 'Demande envoyée' : 'Demander une mise en relation'}</button></div>;
+}

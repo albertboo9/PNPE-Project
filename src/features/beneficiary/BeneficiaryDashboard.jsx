@@ -16,10 +16,10 @@ function BeneficiaryDashboardContent({ workspace }) {
     const { session, dismissRegistrationSuccess } = useDemoSession();
 
     return <Shell>
-        {session.showRegistrationSuccess && <motion.section className="cockpit-welcome" initial={{ opacity: 0, y: reduceMotion ? 0 : -12 }} animate={{ opacity: 1, y: 0 }}>
+        {session.showRegistrationSuccess && <motion.section className="space-welcome" initial={{ opacity: 0, y: reduceMotion ? 0 : -12 }} animate={{ opacity: 1, y: 0 }}>
             <div className="welcome-icon"><ShieldCheck size={23} /></div>
             <div><span>Votre parcours PNPE est prêt</span><strong>Bienvenue Marie. Votre premier diagnostic vous oriente vers la validation marché.</strong><p>Cette orientation et ce score sont des propositions UX de démonstration à confirmer avec votre conseiller.</p></div>
-            <button className="button light" onClick={dismissRegistrationSuccess}>Découvrir mon cockpit <ArrowRight size={16} /></button>
+            <button className="button light" onClick={dismissRegistrationSuccess}>Découvrir mon espace <ArrowRight size={16} /></button>
         </motion.section>}
         <PageHeader
             eyebrow={`Espace porteur · ${beneficiary.project}`}
@@ -87,7 +87,7 @@ function BeneficiaryDashboardContent({ workspace }) {
 
 export function BeneficiaryDashboard() {
     const resource = usePnpeResource(pnpeService.getBeneficiaryWorkspace, []);
-    if (resource.status === 'loading') return <Shell><PageSkeleton label="Préparation du cockpit de Marie" /></Shell>;
+    if (resource.status === 'loading') return <Shell><PageSkeleton label="Préparation de l’espace de Marie" /></Shell>;
     if (resource.status === 'error') return <Shell><ErrorState error={resource.error} onRetry={resource.reload} /></Shell>;
     return <BeneficiaryDashboardContent workspace={resource.data} />;
 }

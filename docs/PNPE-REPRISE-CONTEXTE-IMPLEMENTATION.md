@@ -61,7 +61,7 @@ Ecarts bloquants :
 6. Formation, certification, passeport et maturite ne sont pas relies par une interaction demonstrable.
 7. Incubation, rendez-vous, actions, financement, post-incubation, communaute et evenements sont absents ou superficiels.
 8. Le matching est une carte/toast et non un parcours de sourcing.
-9. Le cockpit Direction manque de pipeline, cohortes, territoires, vigilance et impact exploitable.
+9. L'espace Direction manque de pipeline, cohortes, territoires, vigilance et impact exploitable.
 10. Le design est trop fade : palette peu contrastee, peu d'images, peu de profondeur, cartes abstraites et absence d'incarnation humaine.
 11. Les animations existantes sont ponctuelles et ne structurent pas la demonstration.
 12. `App.jsx` concentre encore trop de routes et de presentation ; la cible doit separer les espaces et les features.
@@ -114,10 +114,10 @@ IDEe → REFERENCEMENT → DIAGNOSTIC → FORMATION → CERTIFICATION
 
 | Acteur | Question principale | Entree attendue |
 | --- | --- | --- |
-| Porteur de projet | Ou en est mon projet et quelle est ma prochaine etape ? | Referencement guide puis cockpit |
+| Porteur de projet | Ou en est mon projet et quelle est ma prochaine etape ? | Referencement guide puis espace personnel |
 | Conseiller PNPE | Qui dois-je accompagner aujourd'hui et sur quoi ? | File de travail priorisee |
 | Partenaire / financeur | Quels projets structures correspondent a mon besoin ? | Sourcing, filtres, matching |
-| Direction PNPE | Quel impact produit la PNPE ? | Observatoire et cockpit d'impact |
+| Direction PNPE | Quel impact produit la PNPE ? | Observatoire et espace d'impact |
 
 ## 4. Premiere experience : Role Selector
 
@@ -139,7 +139,7 @@ La route `/` ne doit plus etre une landing marketing. Elle devient le **PNPE Con
 3. **Partenaire / financeur** — « Je cherche des projets qualifies » → `/partenaire`.
 4. **Direction PNPE** — « Je pilote l'impact de la PNPE » → `/direction`.
 
-La premiere entree porteur doit toujours ouvrir le referencement. Un controle discret `Revoir le cockpit de Marie` peut permettre au presentateur de sauter directement au dashboard apres le premier passage.
+La premiere entree porteur doit toujours ouvrir le referencement. Un controle discret `Revoir l'espace de Marie` peut permettre au presentateur de sauter directement au dashboard apres le premier passage.
 
 ## 5. Referencement guide du porteur
 
@@ -166,7 +166,7 @@ Ce parcours est la porte d'entree principale. Il doit etre chaleureux, explicite
 2. **Idee ou activite** : nom du projet, secteur, probleme auquel il repond.
 3. **Niveau d'avancement** : idee, concept, prototype, premieres ventes, activite lancee.
 4. **Besoins immediats** : formation, accompagnement, equipement, financement, formalites, reseau.
-5. **Resume et orientation** : recapitulatif, diagnostic initial, prochaine etape proposee, creation du cockpit.
+5. **Resume et orientation** : recapitulatif, diagnostic initial, prochaine etape proposee, creation de l'espace personnel.
 
 ### Moment WOW
 
@@ -395,7 +395,7 @@ Scenario canonique :
 1. Choisir Porteur
 2. Referencer Marie / AgroFresh
 3. Voir diagnostic initial
-4. Ouvrir le cockpit porteur
+4. Ouvrir l'espace porteur
 5. Terminer une formation
 6. Voir certificat et maturite evoluer
 7. Ouvrir incubation et action conseiller
@@ -451,7 +451,7 @@ Le prototype est presentable lorsque :
 - creer `RegistrationWizard` complet ;
 - relier soumission au store ;
 - creer transition de succes ;
-- refondre cockpit porteur avec guidance ;
+- refondre l'espace porteur avec guidance ;
 - ajouter JourneyStrip, NextBestAction, AdvisorPresence et HelpAssistant.
 
 ### Lot 3 — Preuves metier

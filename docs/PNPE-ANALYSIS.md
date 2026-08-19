@@ -10,7 +10,7 @@
 
 La valeur du futur prototype ne doit pas venir du nombre d'écrans, mais de la continuité perceptible entre les missions de la PNPE : accueillir un porteur, qualifier son potentiel, le former, l'incuber, l'accompagner, structurer son projet, l'orienter vers une opportunité et mesurer les résultats.
 
-StarterKITCM fournit la base d'un portail entrepreneurial : pages publiques, authentification progressive, espace bénéficiaire, parcours, formations, documents, certifications et communauté. BSTP-Project renforce cette base avec une architecture par rôles, des espaces opérationnels distincts, un cockpit de direction, des données d'observatoire, des composants de passeport/maturité et une passerelle IA avec fallback.
+StarterKITCM fournit la base d'un portail entrepreneurial : pages publiques, authentification progressive, espace bénéficiaire, parcours, formations, documents, certifications et communauté. BSTP-Project renforce cette base avec une architecture par rôles, des espaces opérationnels distincts, un espace de direction, des données d'observatoire, des composants de passeport/maturité et une passerelle IA avec fallback.
 
 PNPEKIT doit conserver ces fondations, mais changer le centre de gravité produit : le bénéficiaire n'est pas une PME déjà qualifiée et la finalité n'est pas la mise en relation avec des donneurs d'ordre. Le modèle PNPE part du porteur et de son idée, puis rend visible la transformation progressive vers un projet mature, une entreprise et un impact mesurable.
 
@@ -107,7 +107,7 @@ BSTP-Project reprend le socle Vite/React Router et ajoute :
 
 `PrivateLayoutPME`, `PrivateLayoutAgent`, `PrivateLayoutDO` et `PrivateLayoutDG` font correspondre chaque rôle à un vocabulaire et à des priorités propres. Ce pattern est indispensable pour PNPE avec les rôles porteur, conseiller, direction et partenaire.
 
-#### Cockpit orienté décision
+#### Espace orienté décision
 
 `DashboardPME` commence par maturité, passeport et opportunités. `DashboardDG` commence par KPI puis déroule pipeline, capital humain, secteurs, territoires et vigilance. Cette hiérarchie raconte une histoire et sera adaptée au parcours PNPE.
 
@@ -256,7 +256,7 @@ En l'absence de décision métier, le prototype affichera ces éléments comme *
 6. Incubation, rendez-vous, accompagnement, financement et opportunités.
 7. Banque de projets, profil projet, filtres et matching partenaire.
 8. Espace conseiller : file opérationnelle et dossier porteur.
-9. Cockpit direction : KPI, pipeline, cohortes, secteurs, territoires et impact.
+9. Espace direction : KPI, pipeline, cohortes, secteurs, territoires et impact.
 10. Polish, mode démonstration déterministe, responsive et QA.
 
 À chaque étape : `npm run build`, contrôle des routes, vérification des états et contrôle mobile. Le prototype est considéré prêt quand le scénario Marie → formation → maturité → opportunité → catalogue → impact est réalisable sans explication technique et sans appel réseau obligatoire.
