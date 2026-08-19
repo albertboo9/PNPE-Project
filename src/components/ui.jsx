@@ -27,6 +27,12 @@ const roleLinks = {
         { to: '/direction/territoires', label: 'Territoires & secteurs', icon: Target },
         { to: '/projets', label: 'Portefeuille projets', icon: BriefcaseBusiness },
     ],
+    partenaire: [
+        { to: '/partenaire', label: 'Cockpit sourcing', icon: LayoutDashboard },
+        { to: '/partenaire/projets', label: 'Banque de projets', icon: BriefcaseBusiness },
+        { to: '/partenaire/matching', label: 'Matching expliqué', icon: Target },
+        { to: '/partenaire/opportunites', label: 'Opportunités', icon: Rocket },
+    ],
 };
 
 export function Logo() {
@@ -37,17 +43,17 @@ export function Shell({ role = 'porteur', children }) {
     const [open, setOpen] = useState(false);
     const location = useLocation();
     const links = roleLinks[role];
-    const roleLabel = role === 'porteur' ? 'Espace porteur' : role === 'conseiller' ? 'Espace conseiller' : 'Direction PNPE';
+    const roleLabel = role === 'porteur' ? 'Espace porteur' : role === 'conseiller' ? 'Espace conseiller' : role === 'partenaire' ? 'Espace partenaire' : 'Direction PNPE';
     return <div className="app-shell">
         <aside className={`sidebar ${open ? 'is-open' : ''}`}>
             <div className="sidebar-top"><Logo /><button className="icon-btn mobile-only" aria-label="Fermer le menu" onClick={() => setOpen(false)}><X size={19} /></button></div>
             <div className="role-switch"><span className="role-dot" />{roleLabel}<ChevronDown size={14} /></div>
             <nav className="side-nav" aria-label="Navigation principale">{links.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} onClick={() => setOpen(false)} className={({ isActive }) => `side-link ${isActive ? 'active' : ''}`}><Icon size={18} /><span>{label}</span></NavLink>)}</nav>
             <div className="side-help"><CircleHelp size={18} /><div><strong>Besoin d'aide ?</strong><span>Parler à un conseiller</span></div></div>
-            <div className="side-user"><div className="avatar">{role === 'porteur' ? 'MN' : role === 'conseiller' ? 'AM' : 'DG'}</div><div><strong>{role === 'porteur' ? 'Marie Ndomo' : role === 'conseiller' ? 'Aline Mballa' : 'Direction PNPE'}</strong><span>{roleLabel}</span></div><Settings2 size={16} /></div>
+            <div className="side-user"><div className="avatar">{role === 'porteur' ? 'MN' : role === 'conseiller' ? 'AM' : role === 'partenaire' ? 'PF' : 'DG'}</div><div><strong>{role === 'porteur' ? 'Marie Ndomo' : role === 'conseiller' ? 'Aline Mballa' : role === 'partenaire' ? 'Partenaire PNPE' : 'Direction PNPE'}</strong><span>{roleLabel}</span></div><Settings2 size={16} /></div>
         </aside>
         <div className="main-area">
-            <header className="topbar"><button className="icon-btn mobile-only" aria-label="Ouvrir le menu" onClick={() => setOpen(true)}><Menu size={21} /></button><div className="crumb">PNPEKIT <span>/</span> {location.pathname === '/' ? 'Accueil' : roleLabel}</div><div className="top-actions"><span className="demo-label">Données de démonstration</span><button className="icon-btn" aria-label="Notifications"><Bell size={19} /><i /></button><button className="top-avatar">{role === 'porteur' ? 'MN' : role === 'conseiller' ? 'AM' : 'DG'}</button></div></header>
+            <header className="topbar"><button className="icon-btn mobile-only" aria-label="Ouvrir le menu" onClick={() => setOpen(true)}><Menu size={21} /></button><div className="crumb">PNPEKIT <span>/</span> {location.pathname === '/' ? 'Accueil' : roleLabel}</div><div className="top-actions"><span className="demo-label">Données de démonstration</span><button className="icon-btn" aria-label="Notifications"><Bell size={19} /><i /></button><button className="top-avatar">{role === 'porteur' ? 'MN' : role === 'conseiller' ? 'AM' : role === 'partenaire' ? 'PF' : 'DG'}</button></div></header>
             <main className="page-content">{children}</main>
         </div>
         {open && <button className="scrim" aria-label="Fermer le menu" onClick={() => setOpen(false)} />}

@@ -6,12 +6,21 @@ import { ErrorState, PageSkeleton } from '../../components/AsyncState';
 import { Journey, Maturity, PageHeader, Panel, Progress, Shell, Status } from '../../components/ui';
 import { usePnpeResource } from '../../hooks/usePnpeResource';
 import { pnpeService } from '../../services/mockService';
+import { useDemoSession } from '../../stores/DemoSessionStore';
+import { motion, useReducedMotion } from 'framer-motion';
 
 function BeneficiaryDashboardContent({ workspace }) {
     const { beneficiary, courses, opportunities } = workspace;
     const opportunity = opportunities[0];
+    const reduceMotion = useReducedMotion();
+    const { session, dismissRegistrationSuccess } = useDemoSession();
 
     return <Shell>
+        {session.showRegistrationSuccess && <motion.section className="cockpit-welcome" initial={{ opacity: 0, y: reduceMotion ? 0 : -12 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="welcome-icon"><ShieldCheck size={23} /></div>
+            <div><span>Votre parcours PNPE est prêt</span><strong>Bienvenue Marie. Votre premier diagnostic vous oriente vers la validation marché.</strong><p>Cette orientation et ce score sont des propositions UX de démonstration à confirmer avec votre conseiller.</p></div>
+            <button className="button light" onClick={dismissRegistrationSuccess}>Découvrir mon cockpit <ArrowRight size={16} /></button>
+        </motion.section>}
         <PageHeader
             eyebrow={`Espace porteur · ${beneficiary.project}`}
             title={`Bonjour ${beneficiary.fullName.split(' ')[0]}, votre projet avance.`}
@@ -25,7 +34,7 @@ function BeneficiaryDashboardContent({ workspace }) {
                 <p>Votre projet est à l'étape de validation marché. Le prochain jalon est à portée de main.</p>
                 <div className="hero-actions">
                     <Link to="/porteur/parcours" className="button light">Voir mon parcours <ArrowRight size={16} /></Link>
-                    <Link to={`/projets/${beneficiary.projectId}`} className="hero-link">Ouvrir mon passeport <ShieldCheck size={15} /></Link>
+                    <Link to="/porteur/passeport" className="hero-link">Ouvrir mon passeport <ShieldCheck size={15} /></Link>
                 </div>
             </div>
             <Maturity beneficiary={beneficiary} />
