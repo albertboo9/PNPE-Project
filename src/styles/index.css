@@ -10154,3 +10154,67 @@ button.filter-chip:hover {
         justify-content: center;
     }
 }
+
+/* Final contrast override: page typography must not override dark workspace surfaces. */
+.page-content .role-hero h1,
+.page-content .role-hero h2,
+.page-content .role-hero h3,
+.page-content .hero-dashboard h1,
+.page-content .hero-dashboard h2,
+.page-content .hero-dashboard h3,
+.page-content .project-cockpit-hero h1,
+.page-content .project-cockpit-hero h2,
+.page-content .project-cockpit-hero h3,
+.page-content .passport-banner h1,
+.page-content .passport-banner h2,
+.page-content .passport-banner h3,
+.page-content .course-detail-hero h1,
+.page-content .course-detail-hero h2,
+.page-content .course-detail-hero h3,
+.page-content .alert-command h1,
+.page-content .alert-command h2,
+.page-content .alert-command h3,
+.page-content .pipeline-hero h1,
+.page-content .pipeline-hero h2,
+.page-content .pipeline-hero h3,
+.page-content .impact-story h1,
+.page-content .impact-story h2,
+.page-content .impact-story h3,
+.page-content .journey-story-hero h1,
+.page-content .journey-story-hero h2,
+.page-content .journey-story-hero h3,
+.page-content .opportunity-radar-hero h1,
+.page-content .opportunity-radar-hero h2,
+.page-content .opportunity-radar-hero h3,
+.page-content .cockpit-intro > div:first-child h1,
+.page-content .cockpit-intro > div:first-child h2,
+.page-content .cockpit-intro > div:first-child h3 {
+    color: #fff;
+}
+
+.page-content .role-hero p:not(.eyebrow),
+.page-content .hero-dashboard p,
+.page-content .project-cockpit-hero p,
+.page-content .passport-banner p,
+.page-content .course-detail-hero p,
+.page-content .alert-command p,
+.page-content .impact-story p,
+.page-content .journey-story-hero p,
+.page-content .opportunity-radar-hero p,
+.page-content .cockpit-intro > div:first-child p {
+    color: rgba(255, 255, 255, .78);
+}
+
+.page-content .role-hero .eyebrow,
+.page-content .hero-dashboard .eyebrow,
+.page-content .project-cockpit-hero .eyebrow,
+.page-content .passport-banner .eyebrow,
+.page-content .course-detail-hero .eyebrow,
+.page-content .alert-command .eyebrow,
+.page-content .pipeline-hero .eyebrow,
+.page-content .impact-story .eyebrow,
+.page-content .journey-story-hero .eyebrow,
+.page-content .opportunity-radar-hero .eyebrow,
+.page-content .cockpit-intro > div:first-child .eyebrow {
+    color: #f4c85a;
+}
