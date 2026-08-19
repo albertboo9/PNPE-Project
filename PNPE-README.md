@@ -27,7 +27,7 @@ Contrats actuellement exposés :
 - `getAdvisorQueue()` et `getDashboardMetrics()`
 - `completeTraining(courseId)`
 
-Les espaces porteur, formation, projets, conseiller et direction consomment cette couche et affichent des états de chargement et d'erreur. Le cockpit porteur est isolé dans `src/features/beneficiary/` ; les autres vues doivent suivre progressivement cette même organisation.
+Les espaces porteur, formation, projets, conseiller et direction consomment cette couche et affichent des états de chargement et d'erreur. L'espace porteur est isolé dans `src/features/beneficiary/` ; les autres vues doivent suivre progressivement cette même organisation.
 
 Prototype de présentation stratégique de la plateforme numérique de la Pépinière Nationale Pilote d'Entreprises d'Edéa.
 
@@ -48,29 +48,39 @@ Le prototype montre comment un même système peut relier le porteur, les équip
 
 ## Fonctionnalités démontrées
 
+### Lot 1 · entrée multi-acteurs et référencement
+
+- sélecteur initial des quatre perspectives : porteur, conseiller, partenaire/financeur et direction ;
+- session de démonstration locale persistée dans `localStorage`, avec réinitialisation et scène courante ;
+- référencement guidé du porteur en cinq étapes, sauvegarde simulée et orientation initiale explicitement marquée comme proposition UX ;
+- transition de confirmation vers l'espace guidé de Marie Ndomo et AgroFresh Cameroun ;
+- assets locaux dédiés aux acteurs et au référencement, sans dépendance à une image distante obligatoire ;
+- navigation responsive et prise en compte de `prefers-reduced-motion`.
+
 - accueil public et découverte de la promesse PNPE ;
 - candidature scénarisée au Programme Accélération PNPE ;
-- cockpit de Marie Ndomo et du projet AgroFresh Cameroun ;
+- espace de Marie Ndomo et du projet AgroFresh Cameroun ;
 - progression du parcours, prochaine action et score de maturité explicable ;
 - catalogue de formations gratuites et payantes ;
 - progression d'apprentissage, certificats et chaîne PNPE vers Moodle ;
 - Banque de projets avec recherche, filtre sectoriel et fiches structurées ;
 - demande de mise en relation avec un partenaire ;
 - file de travail conseiller avec problèmes, blocages et prochaines actions ;
-- cockpit Direction avec KPI, funnel de parcours, secteurs et indicateurs d'impact ;
+- espace Direction avec KPI, funnel de parcours, secteurs et indicateurs d'impact ;
 - notifications/toasts et actions simulées pour soutenir la démonstration.
 
 ## Routes principales
 
 | Route | Espace | Rôle dans la démonstration |
 | --- | --- | --- |
-| `/` | Public | Comprendre la vision PNPE |
-| `/candidater` | Public | Envoyer une candidature simulée |
+| `/` | Control Room | Choisir une perspective de démonstration |
+| `/porteur/referencement` | Porteur | Réaliser le référencement guidé en cinq étapes |
 | `/porteur` | Porteur | Voir l'état du projet et la prochaine action |
 | `/porteur/parcours` | Porteur | Lire la feuille de route complète |
 | `/porteur/formations` | Porteur | Explorer les formations et le lien Moodle |
 | `/projets` | Catalogue | Sourcer des projets accompagnés |
-| `/projets/project-agrofresh` | Projet | Consulter le dossier AgroFresh |
+| `/partenaire` | Partenaire | Lire le matching déterministe et expliqué |
+| `/partenaire/projets/:id` | Partenaire | Consulter le dossier AgroFresh |
 | `/conseiller` | Conseiller | Prioriser les interventions |
 | `/direction` | Direction | Lire l'impact consolidé |
 
@@ -125,14 +135,13 @@ npm run preview
 
 ## Scénario de démonstration
 
-1. Depuis `/`, présenter le principe « de l'idée à l'entreprise » et les quatre composantes PNPE.
-2. Ouvrir `/candidater`, saisir un projet et cliquer sur `Continuer` pour montrer la transmission du dossier.
-3. Depuis le succès, ouvrir le cockpit de Marie sur `/porteur`.
-4. Montrer la maturité `78/100`, l'étape de validation marché et l'action de préparation du financement.
-5. Ouvrir `/porteur/formations` : expliquer que le catalogue PNPE orchestre l'inscription, le campus Moodle, l'évaluation et le certificat.
-6. Ouvrir `/projets` puis la fiche AgroFresh : montrer comment les preuves rendent le projet lisible pour un partenaire.
-7. Ouvrir `/conseiller` : répondre à « qui dois-je accompagner aujourd'hui et sur quoi ? ».
-8. Ouvrir `/direction` : conclure avec le funnel, les secteurs, les projets matures et les emplois potentiels.
+1. Depuis `/`, choisir « Porteur de projet » ou cliquer sur `Lancer la visite guidée`.
+2. Parcourir le référencement en cinq étapes, puis valider `Créer mon espace`.
+3. Depuis la confirmation, ouvrir l'espace de Marie et montrer la prochaine action, la maturité `78/100` et l'étape de validation marché.
+4. Ouvrir `/porteur/formations` ou `/porteur/parcours` pour montrer la continuité du parcours.
+5. Revenir à `/`, choisir « Partenaire / financeur », puis ouvrir la correspondance AgroFresh et ses preuves.
+6. Choisir « Conseiller PNPE » ou « Direction PNPE » pour présenter les espaces réservés à leurs flux opérationnels des prochains lots.
+7. Utiliser le contrôle `Mode démo` pour revenir à l'accueil ou réinitialiser la session.
 
 ## Résilience et limites
 

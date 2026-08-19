@@ -1,4 +1,5 @@
 # PNPEKIT
+
 ## Plateforme numérique de la Pépinière Nationale Pilote d’Entreprises d’Edéa
 
 ### Dossier de spécifications produit, fonctionnelles, UX/UI et scénario de démonstration
@@ -1841,7 +1842,7 @@ Espace Agent.
 
 ### Phase 12
 
-Cockpit Direction.
+Espace Direction.
 
 ### Phase 13
 
